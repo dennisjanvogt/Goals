@@ -1,6 +1,8 @@
 from django import forms
-from django.utils import timezone
 from .models import Goal
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+from django.utils.translation import gettext_lazy as _
 
 class GoalForm(forms.ModelForm):
     class Meta:
@@ -36,11 +38,6 @@ class GoalForm(forms.ModelForm):
         return end
     
 
-
-    # tracking/forms.py
-from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.utils.translation import gettext_lazy as _
 
 class CustomAuthenticationForm(AuthenticationForm):
     """
