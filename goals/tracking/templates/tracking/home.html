@@ -1,0 +1,434 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Ziele</title>
+    <style>
+        :root {
+            --primary: #4a6fdc;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --health: #42b883;
+            --finance: #f1c40f;
+            --career: #9b59b6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f8ff;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background-color: #e9ecef;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .filter-btn.health {
+            border: 2px solid var(--health);
+        }
+        
+        .filter-btn.health.active {
+            background-color: var(--health);
+        }
+
+        .filter-btn.finance {
+            border: 2px solid var(--finance);
+        }
+        
+        .filter-btn.finance.active {
+            background-color: var(--finance);
+        }
+
+        .filter-btn.career {
+            border: 2px solid var(--career);
+        }
+        
+        .filter-btn.career.active {
+            background-color: var(--career);
+        }
+
+        .goals-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
+        }
+
+        .goal-card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .goal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .goal-card.Gesundheit::before {
+            background-color: var(--health);
+        }
+
+        .goal-card.Finanzen::before {
+            background-color: var(--finance);
+        }
+
+        .goal-card.Karriere::before {
+            background-color: var(--career);
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .goal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .category-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .category-badge.Gesundheit {
+            background-color: rgba(66, 184, 131, 0.15);
+            color: var(--health);
+        }
+
+        .category-badge.Finanzen {
+            background-color: rgba(241, 196, 15, 0.15);
+            color: var(--finance);
+        }
+
+        .category-badge.Karriere {
+            background-color: rgba(155, 89, 182, 0.15);
+            color: var(--career);
+        }
+
+        .goal-desc {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .progress-container {
+            margin-bottom: 16px;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .target-value {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .target-value span:first-child {
+            font-weight: 600;
+        }
+
+        .timeframe {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid #e9ecef;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .no-goals {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .statistic-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .goals-container {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-container {
+                flex-wrap: wrap;
+            }
+
+            .statistic-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Meine Ziele Übersicht</h1>
+            <p>Verfolge deinen Fortschritt und erreiche deine Ziele</p>
+        </div>
+
+        <div class="statistic-cards">
+            <div class="stat-card">
+                <div class="stat-value" id="total-goals">{{ goals|length }}</div>
+                <div class="stat-label">Gesamtziele</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completed-goals">{{ avg_progress|floatformat:0 }}%</div>
+                <div class="stat-label">Durchschnittlicher Fortschritt</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-goals">{{ active_goals }}</div>
+                <div class="stat-label">Aktive Ziele</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="nearest-deadline">{{ nearest_deadline|date:"d.m.Y" }}</div>
+                <div class="stat-label">Nächste Fälligkeit</div>
+            </div>
+        </div>
+
+        <div class="filter-container">
+            <button class="filter-btn active" data-category="all">Alle Ziele</button>
+            <button class="filter-btn health" data-category="Gesundheit">Gesundheit</button>
+            <button class="filter-btn finance" data-category="Finanzen">Finanzen</button>
+            <button class="filter-btn career" data-category="Karriere">Karriere</button>
+        </div>
+
+        <div class="goals-container" id="goals-container">
+            {% for goal in goals %}
+            <div class="goal-card {{ goal.kategorie }}" data-category="{{ goal.kategorie }}">
+                <div class="goal-header">
+                    <h3 class="goal-title">{{ goal.definition }}</h3>
+                    <span class="category-badge {{ goal.kategorie }}">{{ goal.kategorie }}</span>
+                </div>
+                <p class="goal-desc">{{ goal.description }}</p>
+                <div class="progress-container">
+                    <div class="progress-stats">
+                        <span class="progress-text">Fortschritt: {{ goal.fortschritt }}%</span>
+                        <span>{{ goal.fortschritt }} / {{ goal.ziel_wert }} {{ goal.einheit }}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" data-fortschritt="{{ goal.fortschritt }}" data-ziel="{{ goal.ziel_wert }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="timeframe">
+                    <span>Start: {{ goal.start|date:"d.m.Y" }}</span>
+                    <span>
+                        {% with days_remaining=goal.end|timeuntil:today %}
+                        {% if goal.end < today %}
+                            Abgelaufen
+                        {% elif goal.end == today %}
+                            Heute fällig
+                        {% else %}
+                            {{ days_remaining }} verbleibend
+                        {% endif %}
+                        {% endwith %}
+                    </span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-goals">
+                <h3>Keine Ziele gefunden</h3>
+                <p>Es wurden noch keine Ziele eingerichtet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Hilsfunktion: Prozentsatz und Farbe des Fortschritts berechnen
+        function calculateProgress(fortschritt, zielWert) {
+            const percentage = Math.round((fortschritt / zielWert) * 100);
+            let color = 'var(--success)';
+            
+            if (percentage < 30) {
+                color = 'var(--danger)';
+            } else if (percentage < 70) {
+                color = 'var(--warning)';
+            }
+            
+            return { percentage, color };
+        }
+        
+        // Fortschrittsbalken initialisieren
+        function initializeProgressBars() {
+            const progressFills = document.querySelectorAll('.progress-fill');
+            
+            progressFills.forEach(fill => {
+                const fortschritt = parseFloat(fill.dataset.fortschritt);
+                const zielWert = parseFloat(fill.dataset.ziel);
+                const progress = calculateProgress(fortschritt, zielWert);
+                
+                // Fortschrittsbalken aktualisieren
+                fill.style.width = `${progress.percentage}%`;
+                fill.style.backgroundColor = progress.color;
+                
+                // Fortschrittstext aktualisieren
+                const progressTextElement = fill.closest('.progress-container').querySelector('.progress-text');
+                if (progressTextElement) {
+                    progressTextElement.textContent = `Fortschritt: ${progress.percentage}%`;
+                }
+            });
+        }
+        
+        // Filter-Funktionalität
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fortschrittsbalken initialisieren
+            initializeProgressBars();
+            
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const goalCards = document.querySelectorAll('.goal-card');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Aktiven Button aktualisieren
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const selectedCategory = button.dataset.category;
+                    
+                    // Ziele filtern
+                    goalCards.forEach(card => {
+                        if (selectedCategory === 'all' || card.dataset.category === selectedCategory) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                    
+                    // Überprüfen, ob keine Ziele angezeigt werden
+                    const visibleCards = document.querySelectorAll('.goal-card[style="display: block;"]');
+                    const goalsContainer = document.getElementById('goals-container');
+                    
+                    if (visibleCards.length === 0 && selectedCategory !== 'all') {
+                        if (!document.querySelector('.no-goals-filtered')) {
+                            const noGoalsMessage = document.createElement('div');
+                            noGoalsMessage.className = 'no-goals no-goals-filtered';
+                            noGoalsMessage.innerHTML = `
+                                <h3>Keine Ziele gefunden</h3>
+                                <p>Für die Kategorie "${selectedCategory}" wurden keine Ziele eingerichtet.</p>
+                            `;
+                            goalsContainer.appendChild(noGoalsMessage);
+                        }
+                    } else {
+                        const noGoalsFiltered = document.querySelector('.no-goals-filtered');
+                        if (noGoalsFiltered) {
+                            noGoalsFiltered.remove();
+                        }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
