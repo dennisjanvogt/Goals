@@ -80,6 +80,12 @@
         justify-content: center;
         gap: 20px;
     }
+    
+    .warning-text {
+        color: #d9534f;
+        font-weight: bold;
+        margin-top: 20px;
+    }
 </style>
 {% endblock %}
 
@@ -103,12 +109,26 @@
         <p>Kategorie: {{ goal.kategorie }}</p>
         <p>Fortschritt: {{ goal.fortschritt }} / {{ goal.ziel_wert }} {{ goal.einheit }}</p>
         <p>Zeitraum: {{ goal.start|date:"d.m.Y" }} - {{ goal.end|date:"d.m.Y" }}</p>
+        
+        {% if goal.parent %}
+        <p>Unterziel von: {{ goal.parent.definition }}</p>
+        {% endif %}
+        
+        {% with subtask_count=goal.subtasks.count %}
+        {% if subtask_count > 0 %}
+        <p class="warning-text">Dieses Ziel hat {{ subtask_count }} Unterziel{% if subtask_count > 1 %}e{% endif %}, die ebenfalls gelöscht werden!</p>
+        {% endif %}
+        {% endwith %}
     </div>
     
     <form method="post">
         {% csrf_token %}
         <div class="form-actions">
+            {% if goal.parent %}
+            <a href="{% url 'goals' %}?parent_id={{ goal.parent.id }}" class="btn btn-secondary">Abbrechen</a>
+            {% else %}
             <a href="{% url 'goals' %}" class="btn btn-secondary">Abbrechen</a>
+            {% endif %}
             <button type="submit" class="btn btn-danger">Löschen bestätigen</button>
         </div>
     </form>

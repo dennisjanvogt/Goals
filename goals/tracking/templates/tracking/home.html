@@ -258,6 +258,41 @@
         .statistic-cards {
             grid-template-columns: 1fr;
         }
+        .filter-btn.learning {
+        border: 2px solid var(--learning);
+    }
+    
+    .filter-btn.learning.active {
+        background-color: var(--learning);
+    }
+    
+    .filter-btn.other {
+        border: 2px solid var(--other);
+    }
+    
+    .filter-btn.other.active {
+        background-color: var(--other);
+    }
+    
+    /* Zielkarten Styles für neue Kategorien */
+    .goal-card.Lernen::before {
+        background-color: var(--learning);
+    }
+
+    .goal-card.Sonstiges::before {
+        background-color: var(--other);
+    }
+    
+    /* Badges für neue Kategorien */
+    .category-badge.Lernen {
+        background-color: rgba(231, 76, 60, 0.15);
+        color: var(--learning);
+    }
+
+    .category-badge.Sonstiges {
+        background-color: rgba(127, 140, 141, 0.15);
+        color: var(--other);
+    }
     }
 </style>
 {% endblock %}
@@ -293,11 +328,121 @@
     </div>
 </div>
 
+{% if selected_goal %}
+<div class="selected-goal-info" style="margin-bottom: 30px; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>{{ selected_goal.definition }}</h2>
+        <a href="{% url 'goals' %}" class="btn btn-light">Zurück zur Übersicht</a>
+    </div>
+    
+    <div class="progress-container" style="margin-bottom: 20px;">
+        <div class="progress-stats">
+            {% with progress_percent=selected_goal.fortschritt|floatformat:0|default:"0" %}
+            <span class="progress-text">Fortschritt: {{ progress_percent }}%</span>
+            <span>{{ selected_goal.fortschritt }} / {{ selected_goal.ziel_wert }} {{ selected_goal.einheit }}</span>
+            {% endwith %}
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ selected_goal.fortschritt|floatformat:0 }}%;"></div>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+        <p>{{ selected_goal.description }}</p>
+        <p><strong>Kategorie:</strong> {{ selected_goal.kategorie }}</p>
+        <p><strong>Zeitraum:</strong> {{ selected_goal.start|date:"d.m.Y" }} - {{ selected_goal.end|date:"d.m.Y" }}</p>
+        {% if selected_goal.auto_calculate %}
+        <p><span class="category-badge" style="background-color: rgba(52, 152, 219, 0.15); color: #3498db;">Automatische Berechnung aktiviert</span></p>
+        {% endif %}
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+        <h3>Unterziele</h3>
+        <a href="{% url 'add_goal' %}?parent_id={{ selected_goal.id }}" class="btn btn-primary" style="margin-top: 10px;">
+            Neues Unterziel hinzufügen
+        </a>
+    </div>
+</div>
+
+<div class="goals-container" id="goals-container">
+    {% for goal in subtasks %}
+    <div class="goal-card {{ goal.kategorie }}" data-category="{{ goal.kategorie }}">
+        <div class="goal-header">
+            <h3 class="goal-title">{{ goal.definition }}</h3>
+            <span class="category-badge {{ goal.kategorie }}">{{ goal.kategorie }}</span>
+        </div>
+        <p class="goal-desc">{{ goal.description }}</p>
+        <div class="progress-container">
+            <div class="progress-stats">
+                {% with progress_percent=goal.progress_percent|floatformat:0 %}
+                <span class="progress-text">Fortschritt: {{ progress_percent }}%</span>
+                <span>{{ goal.fortschritt }} / {{ goal.ziel_wert }} {{ goal.einheit }}</span>
+                {% endwith %}
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ goal.progress_percent|floatformat:0 }}%"></div>
+            </div>
+        </div>
+        <div class="timeframe">
+            <span>Start: {{ goal.start|date:"d.m.Y" }}</span>
+            <span>
+                {% with days_remaining=goal.end|timeuntil:today %}
+                {% if goal.end < today %}
+                    <span style="color: var(--danger);">Abgelaufen</span>
+                {% elif goal.end == today %}
+                    <span style="color: var(--warning);">Heute fällig</span>
+                {% else %}
+                    {{ days_remaining }} verbleibend
+                {% endif %}
+                {% endwith %}
+            </span>
+        </div>
+        
+        <!-- Update Progress Form -->
+        {% if not goal.auto_calculate %}
+        <form method="post" action="{% url 'update_progress' goal.id %}" class="update-progress-form" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef;">
+            {% csrf_token %}
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="number" name="fortschritt" step="0.01" min="0" max="{{ goal.ziel_wert }}" value="{{ goal.fortschritt }}" placeholder="Neuer Fortschritt" 
+                       style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <button type="submit" style="background-color: var(--primary); color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer;">
+                    Aktualisieren
+                </button>
+            </div>
+        </form>
+        {% else %}
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef; color: #6c757d; font-style: italic;">
+            Fortschritt wird automatisch berechnet
+        </div>
+        {% endif %}
+        
+        <!-- Action Buttons -->
+        <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+            <a href="{% url 'update_goal' goal.id %}" class="btn btn-light">
+                Bearbeiten
+            </a>
+            <a href="{% url 'delete_goal' goal.id %}" class="btn btn-danger">
+                Löschen
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="no-goals">
+        <h3>Keine Unterziele gefunden</h3>
+        <p>Es wurden noch keine Unterziele eingerichtet.</p>
+        <a href="{% url 'add_goal' %}?parent_id={{ selected_goal.id }}" class="btn btn-primary" style="margin-top: 15px;">Unterziel erstellen</a>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
 <div class="filter-container">
     <button class="filter-btn active" data-category="all">Alle Ziele</button>
     <button class="filter-btn health" data-category="Gesundheit">Gesundheit</button>
     <button class="filter-btn finance" data-category="Finanzen">Finanzen</button>
     <button class="filter-btn career" data-category="Karriere">Karriere</button>
+    <button class="filter-btn learning" data-category="Lernen">Lernen</button>
+    <button class="filter-btn other" data-category="Sonstiges">Sonstiges</button>
 </div>
 
 <div class="goals-container" id="goals-container">
@@ -334,7 +479,25 @@
             </span>
         </div>
         
+        <!-- Subtasks Badge/Link -->
+        {% with subtask_count=goal.subtasks.count %}
+        {% if subtask_count > 0 %}
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef;">
+            <a href="?parent_id={{ goal.id }}" style="display: flex; align-items: center; justify-content: center; padding: 8px; background-color: #f8f9fa; border-radius: 6px; color: #4a6fdc; text-decoration: none; font-weight: 600;">
+                <span>{{ subtask_count }} Unterziel{% if subtask_count > 1 %}e{% endif %} anzeigen</span>
+            </a>
+        </div>
+        {% else %}
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef;">
+            <a href="{% url 'add_goal' %}?parent_id={{ goal.id }}" style="display: flex; align-items: center; justify-content: center; padding: 8px; background-color: #f8f9fa; border-radius: 6px; color: #6c757d; text-decoration: none;">
+                <span>Unterziele hinzufügen</span>
+            </a>
+        </div>
+        {% endif %}
+        {% endwith %}
+        
         <!-- Update Progress Form -->
+        {% if not goal.auto_calculate %}
         <form method="post" action="{% url 'update_progress' goal.id %}" class="update-progress-form" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef;">
             {% csrf_token %}
             <div style="display: flex; gap: 10px; align-items: center;">
@@ -345,6 +508,11 @@
                 </button>
             </div>
         </form>
+        {% else %}
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef; color: #6c757d; font-style: italic; text-align: center;">
+            Fortschritt wird automatisch berechnet
+        </div>
+        {% endif %}
         
         <!-- Action Buttons -->
         <div style="display: flex; justify-content: space-between; margin-top: 15px;">
@@ -364,6 +532,7 @@
     </div>
     {% endfor %}
 </div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}

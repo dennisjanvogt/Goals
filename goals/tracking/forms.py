@@ -1,13 +1,13 @@
+# tracking/forms.py
 from django import forms
 from .models import Goal
-from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext_lazy as _
 
 class GoalForm(forms.ModelForm):
     class Meta:
         model = Goal
-        fields = ['definition', 'description', 'ziel_wert', 'fortschritt', 'einheit', 'start', 'end', 'kategorie']
+        fields = ['definition', 'description', 'ziel_wert', 'fortschritt', 'einheit', 'start', 'end', 'kategorie', 'parent', 'auto_calculate']
         widgets = {
             'definition': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ziel definieren'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Beschreibung des Ziels'}),
@@ -16,13 +16,56 @@ class GoalForm(forms.ModelForm):
             'einheit': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'z.B. km, Bücher, €'}),
             'start': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'end': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'kategorie': forms.Select(attrs={'class': 'form-control'})
+            'kategorie': forms.Select(attrs={'class': 'form-control'}),
+            'parent': forms.Select(attrs={'class': 'form-control'}),
+            'auto_calculate': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if user:
+            # Filter nur Hauptziele dieses Benutzers als mögliche Elternziele
+            parent_goals = Goal.objects.filter(user=user, parent__isnull=True)
+            self.fields['parent'].queryset = parent_goals
+            self.fields['parent'].label = "Übergeordnetes Ziel (optional)"
+            self.fields['parent'].required = False
+            
+            # Auto-Calculate Field Erklärung
+            self.fields['auto_calculate'].label = "Fortschritt automatisch berechnen"
+            
+        # Fortschritt-Feld als optional markieren für automatisch berechnete Ziele
+        self.fields['fortschritt'].required = False
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        parent = cleaned_data.get('parent')
+        auto_calculate = cleaned_data.get('auto_calculate')
+        fortschritt = cleaned_data.get('fortschritt')
+        
+        # Wenn kein Elternziel ausgewählt ist und auto_calculate aktiviert ist
+        if not parent and auto_calculate:
+            # Hier könnten wir eine Warnung anzeigen, dass auto_calculate
+            # nur bei Elternzielen sinnvoll ist, aber wir erlauben es trotzdem
+            pass
+            
+        # Wenn auto_calculate aktiviert ist und kein Fortschritt angegeben wurde,
+        # setze Fortschritt auf 0 als Startwert
+        if auto_calculate and fortschritt is None:
+            cleaned_data['fortschritt'] = 0
+            
+        return cleaned_data
         
     def clean_fortschritt(self):
         fortschritt = self.cleaned_data.get('fortschritt')
         ziel_wert = self.cleaned_data.get('ziel_wert')
+        auto_calculate = self.cleaned_data.get('auto_calculate')
         
+        # Wenn auto_calculate aktiviert ist, kann fortschritt None sein
+        if auto_calculate and fortschritt is None:
+            return 0
+            
         if fortschritt and ziel_wert and fortschritt > ziel_wert:
             raise forms.ValidationError("Der Fortschritt kann nicht größer als der Zielwert sein.")
         

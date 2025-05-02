@@ -107,6 +107,16 @@
     .error-list ul {
         margin: 10px 0 0 20px;
     }
+    
+    .form-check {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .form-check-input {
+        margin-right: 10px;
+    }
 </style>
 {% endblock %}
 
@@ -151,6 +161,34 @@
                 <div class="form-error">{{ form.description.errors.0 }}</div>
             {% endif %}
             <div class="help-text">Beschreibe dein Ziel genauer (optional)</div>
+        </div>
+        
+        {% if parent_goal %}
+        <div class="form-group">
+            <label>Übergeordnetes Ziel:</label>
+            <input type="text" class="form-control" value="{{ parent_goal.definition }}" disabled>
+            <div class="help-text">Dies ist ein Unterziel von {{ parent_goal.definition }}</div>
+            {{ form.parent.as_hidden }}
+        </div>
+        {% else %}
+        <div class="form-group">
+            <label for="id_parent">{{ form.parent.label }}:</label>
+            {{ form.parent }}
+            {% if form.parent.errors %}
+                <div class="form-error">{{ form.parent.errors.0 }}</div>
+            {% endif %}
+            <div class="help-text">Optional: Wähle ein übergeordnetes Ziel aus, falls dies ein Unterziel ist</div>
+        </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <div class="form-check">
+                {{ form.auto_calculate }}
+                <label class="form-check-label" for="id_auto_calculate" style="display: inline-block; margin-left: 8px;">
+                    Fortschritt automatisch aus Unterzielen berechnen
+                </label>
+            </div>
+            <div class="help-text">Wenn aktiviert, wird der Fortschritt automatisch basierend auf den Unterzielen berechnet</div>
         </div>
         
         <div class="form-row" style="display: flex; gap: 20px;">
@@ -206,7 +244,11 @@
         </div>
         
         <div class="form-actions">
+            {% if parent_goal %}
+            <a href="{% url 'goals' %}?parent_id={{ parent_goal.id }}" class="btn btn-secondary">Abbrechen</a>
+            {% else %}
             <a href="{% url 'goals' %}" class="btn btn-secondary">Abbrechen</a>
+            {% endif %}
             <button type="submit" class="btn btn-primary">{{ button_text }}</button>
         </div>
     </form>
