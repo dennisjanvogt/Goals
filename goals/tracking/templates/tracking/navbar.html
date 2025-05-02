@@ -1,11 +1,43 @@
+<!-- tracking/templates/tracking/navbar.html -->
 <nav style="background-color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 15px 0;">
-    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
-        <div style="font-size: 1.5rem; font-weight: bold; color: #4a6fdc;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 0 15px;">
+        <div style="font-size: 1.3rem; font-weight: bold; color: #4a6fdc; margin-bottom: 10px; flex: 1 1 100%;">
             <a href="{% url 'goals' %}" style="text-decoration: none; color: inherit;">Ziel-Tracker</a>
         </div>
-        <div>
-            <a href="{% url 'goals' %}" style="text-decoration: none; color: #333; margin-right: 20px; font-weight: 500;">Übersicht</a>
-            <a href="{% url 'add_goal' %}" style="text-decoration: none; color: #fff; background-color: #4a6fdc; padding: 8px 16px; border-radius: 4px; font-weight: 500;">Neues Ziel</a>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; width: 100%;">
+            {% if user.is_authenticated %}
+                <span style="margin-right: 15px; color: #666; font-size: 0.9rem;">Hallo, {{ user.username }}</span>
+                <div style="display: flex; gap: 10px; margin-top: 5px;">
+                    <a href="{% url 'goals' %}" style="text-decoration: none; color: #333; font-weight: 500; font-size: 0.9rem;">Übersicht</a>
+                    <a href="{% url 'add_goal' %}" style="text-decoration: none; color: #333; font-weight: 500; font-size: 0.9rem;">Neues Ziel</a>
+                    <a href="{% url 'logout' %}" style="text-decoration: none; color: #fff; background-color: #6c757d; padding: 6px 12px; border-radius: 4px; font-weight: 500; font-size: 0.9rem;">Abmelden</a>
+                </div>
+            {% else %}
+                <div style="display: flex; gap: 10px; width: 100%; justify-content: flex-end; margin-top: 5px;">
+                    <a href="{% url 'login' %}" style="text-decoration: none; color: #333; font-weight: 500; font-size: 0.9rem; padding: 6px 12px;">Anmelden</a>
+                    <a href="{% url 'register' %}" style="text-decoration: none; color: #fff; background-color: #4a6fdc; padding: 6px 12px; border-radius: 4px; font-weight: 500; font-size: 0.9rem;">Registrieren</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 </nav>
+
+<!-- Responsive CSS for larger screens -->
+<style>
+    @media (min-width: 768px) {
+        nav > div {
+            display: flex;
+            flex-wrap: nowrap !important;
+        }
+        
+        nav > div > div:first-child {
+            flex: 0 1 auto !important;
+            margin-bottom: 0 !important;
+        }
+        
+        nav > div > div:last-child {
+            width: auto !important;
+            justify-content: flex-end !important;
+        }
+    }
+</style>

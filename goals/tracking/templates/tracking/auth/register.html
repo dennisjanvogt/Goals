@@ -1,0 +1,192 @@
+<!-- tracking/templates/tracking/auth/register.html -->
+{% extends 'tracking/base.html' %}
+{% load static %}
+
+{% block title %}Registrieren{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        width: 100%;
+        max-width: 400px;
+        margin: 20px auto;
+        background: white;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px; /* Minimum 16px to prevent zoom on iOS */
+        transition: border-color 0.3s;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(74, 111, 220, 0.2);
+    }
+
+    .form-help {
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-top: 6px;
+        line-height: 1.4;
+    }
+
+    .form-error {
+        color: var(--danger);
+        font-size: 0.85rem;
+        margin-top: 6px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+        width: 100%;
+        padding: 14px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: #3a5dc2;
+    }
+
+    .auth-links {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.95rem;
+    }
+
+    .auth-links a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .auth-links a:hover {
+        text-decoration: underline;
+    }
+
+    .error-list {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: var(--danger);
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--danger);
+    }
+
+    .page-title {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.75rem;
+        color: #333;
+    }
+
+    /* Make fields look better on mobile */
+    @media (max-width: 480px) {
+        .auth-container {
+            margin: 10px auto;
+            padding: 20px;
+            width: 90%;
+        }
+
+        .form-group label {
+            font-size: 0.95rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 class="page-title">Registrieren</h2>
+    
+    {% if form.errors %}
+        <div class="error-list">
+            <strong>Bitte korrigiere die folgenden Fehler:</strong>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_username">Benutzername:</label>
+            <input type="text" name="username" id="id_username" class="form-control" required autofocus>
+            {% if form.username.errors %}
+                <div class="form-error">{{ form.username.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_password1">Passwort:</label>
+            <input type="password" name="password1" id="id_password1" class="form-control" required>
+            {% if form.password1.errors %}
+                <div class="form-error">{{ form.password1.errors.0 }}</div>
+            {% endif %}
+            <div class="form-help">
+                <ul>
+                    <li>Mindestens 8 Zeichen</li>
+                    <li>Darf nicht zu ähnlich zu persönlichen Informationen sein</li>
+                    <li>Darf kein häufig verwendetes Passwort sein</li>
+                    <li>Darf nicht nur aus Ziffern bestehen</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_password2">Passwort bestätigen:</label>
+            <input type="password" name="password2" id="id_password2" class="form-control" required>
+            {% if form.password2.errors %}
+                <div class="form-error">{{ form.password2.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="btn-primary">Registrieren</button>
+    </form>
+    
+    <div class="auth-links">
+        <p>Schon ein Konto? <a href="{% url 'login' %}">Anmelden</a></p>
+    </div>
+</div>
+{% endblock %}

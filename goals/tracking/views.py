@@ -1,19 +1,21 @@
+# tracking/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Avg, F, ExpressionWrapper, FloatField
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Goal
 from .forms import GoalForm
-from django.contrib import messages
 
+@login_required
 def goals_view(request):
     today = timezone.now().date()
     
-    # Alle Ziele abrufen
-    goals = Goal.objects.all()
+    # Filter goals by the authenticated user
+    goals = Goal.objects.filter(user=request.user)
     
     # Fortschritt in Prozent für jedes Ziel berechnen
-    # Verwenden von F() expressions für die Berechnung im Datenbankquery
     goals_with_progress = goals.annotate(
         progress_percent=ExpressionWrapper(
             (F('fortschritt') * 100.0) / F('ziel_wert'), 
@@ -41,15 +43,18 @@ def goals_view(request):
     
     return render(request, 'tracking/home.html', context)
 
+@login_required
 def add_goal(request):
     if request.method == 'POST':
         form = GoalForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Set the user before saving
+            goal = form.save(commit=False)
+            goal.user = request.user
+            goal.save()
             messages.success(request, 'Ziel erfolgreich erstellt!')
             return redirect('goals')
     else:
-        # Initialisiere Formular mit heutigem Datum als Startdatum
         form = GoalForm(initial={'start': timezone.now().date()})
     
     return render(request, 'tracking/add_update_goal.html', {
@@ -58,8 +63,9 @@ def add_goal(request):
         'button_text': 'Erstellen'
     })
 
+@login_required
 def update_goal(request, goal_id):
-    goal = get_object_or_404(Goal, id=goal_id)
+    goal = get_object_or_404(Goal, id=goal_id, user=request.user)
     
     if request.method == 'POST':
         form = GoalForm(request.POST, instance=goal)
@@ -77,8 +83,9 @@ def update_goal(request, goal_id):
         'goal': goal
     })
 
+@login_required
 def delete_goal(request, goal_id):
-    goal = get_object_or_404(Goal, id=goal_id)
+    goal = get_object_or_404(Goal, id=goal_id, user=request.user)
     
     if request.method == 'POST':
         goal.delete()
@@ -87,8 +94,9 @@ def delete_goal(request, goal_id):
     
     return render(request, 'tracking/delete_goal.html', {'goal': goal})
 
+@login_required
 def update_progress(request, goal_id):
-    goal = get_object_or_404(Goal, id=goal_id)
+    goal = get_object_or_404(Goal, id=goal_id, user=request.user)
     
     if request.method == 'POST':
         new_progress = request.POST.get('fortschritt')

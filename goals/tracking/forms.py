@@ -34,3 +34,29 @@ class GoalForm(forms.ModelForm):
             raise forms.ValidationError("Das Enddatum kann nicht vor dem Startdatum liegen.")
         
         return end
+    
+
+
+    # tracking/forms.py
+from django import forms
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.utils.translation import gettext_lazy as _
+
+class CustomAuthenticationForm(AuthenticationForm):
+    """
+    Custom authentication form with better error messages
+    """
+    error_messages = {
+        'invalid_login': _(
+            "Bitte gib einen gültigen Benutzernamen und ein Passwort ein. "
+            "Die Eingaben sind möglicherweise falsch."
+        ),
+        'inactive': _("Dieses Konto ist inaktiv."),
+    }
+    
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Benutzername'}),
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort'}),
+    )

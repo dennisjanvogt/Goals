@@ -1,8 +1,15 @@
-
+# goals/urls.py
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
+from tracking import views_auth
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tracking/', include('tracking.urls'))
+    path('tracking/', include('tracking.urls')),
+    path('register/', views_auth.register_view, name='register'),
+    path('login/', views_auth.login_view, name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='tracking/auth/logout.html'), name='logout'),
+    path('', lambda request: redirect('goals'), name='home'),
 ]

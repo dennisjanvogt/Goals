@@ -1,0 +1,147 @@
+<!-- tracking/templates/tracking/auth/login.html -->
+{% extends 'tracking/base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        width: 100%;
+        max-width: 400px;
+        margin: 20px auto;
+        background: white;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px; /* Minimum 16px to prevent zoom on iOS */
+        transition: border-color 0.3s;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(74, 111, 220, 0.2);
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+        width: 100%;
+        padding: 14px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: #3a5dc2;
+    }
+
+    .auth-links {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.95rem;
+    }
+
+    .auth-links a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .auth-links a:hover {
+        text-decoration: underline;
+    }
+
+    .error-list {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: var(--danger);
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--danger);
+    }
+
+    .page-title {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.75rem;
+        color: #333;
+    }
+
+    /* Make fields look better on mobile */
+    @media (max-width: 480px) {
+        .auth-container {
+            margin: 10px auto;
+            padding: 20px;
+            width: 90%;
+        }
+
+        .form-group label {
+            font-size: 0.95rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 class="page-title">Anmelden</h2>
+    
+    {% if form.errors %}
+        <div class="error-list">
+            <p>Benutzername oder Passwort ist falsch. Bitte versuche es erneut.</p>
+        </div>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_username">Benutzername:</label>
+            <input type="text" name="username" id="id_username" class="form-control" autocomplete="username" autofocus required>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_password">Passwort:</label>
+            <input type="password" name="password" id="id_password" class="form-control" autocomplete="current-password" required>
+        </div>
+        
+        <button type="submit" class="btn-primary">Anmelden</button>
+    </form>
+    
+    <div class="auth-links">
+        <p>Noch kein Konto? <a href="{% url 'register' %}">Registrieren</a></p>
+    </div>
+</div>
+{% endblock %}
