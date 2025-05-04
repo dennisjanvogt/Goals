@@ -1,0 +1,196 @@
+<!-- home/templates/home/base_navbar.html -->
+<nav class="main-nav">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <a href="{% url 'landing_page' %}">Bisasam</a>
+        </div>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <div class="user-greeting">
+                    <span>Hallo, {{ user.username }}</span>
+                </div>
+                <div class="nav-actions">
+                    <a href="{% url 'landing_page' %}" class="nav-link">
+                        <i class="nav-icon">🏠</i>App-Auswahl
+                    </a>
+                    
+                    <!-- App-specific navigation items will be inserted here -->
+                    {% block app_specific_nav %}{% endblock %}
+                    
+                    <form action="{% url 'logout' %}" method="post" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn">
+                            <i class="nav-icon">🚪</i>Abmelden
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="nav-actions">
+                    <a href="{% url 'login' %}" class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+                        Anmelden
+                    </a>
+                    <a href="{% url 'register' %}" class="signup-btn">
+                        Registrieren
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<style>
+    .main-nav {
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 15px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 15px;
+    }
+
+    .nav-brand {
+        font-size: 1.4rem;
+        font-weight: bold;
+    }
+
+    .nav-brand a {
+        text-decoration: none;
+        color: var(--primary);
+        transition: color 0.3s ease;
+    }
+
+    .nav-brand a:hover {
+        color: #3a5dc2;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-greeting {
+        color: #666;
+        font-size: 0.9rem;
+        padding-right: 10px;
+        border-right: 1px solid #eee;
+    }
+
+    .nav-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .nav-link {
+        text-decoration: none;
+        color: #555;
+        font-weight: 500;
+        font-size: 0.95rem;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .nav-link:hover {
+        background-color: #f5f8ff;
+        color: var(--primary);
+    }
+
+    .nav-link.active {
+        background-color: #f0f5ff;
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .nav-icon {
+        font-size: 1rem;
+    }
+
+    .signup-btn {
+        text-decoration: none;
+        color: #fff;
+        background-color: var(--primary);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .signup-btn:hover {
+        background-color: #3a5dc2;
+    }
+
+    .logout-form {
+        margin: 0;
+    }
+
+    .logout-btn {
+        background-color: transparent;
+        border: none;
+        color: #555;
+        font-weight: 500;
+        font-size: 0.95rem;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .logout-btn:hover {
+        background-color: #fff0f0;
+        color: var(--danger);
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .nav-links {
+            width: 100%;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .user-greeting {
+            border-right: none;
+            padding-right: 0;
+            margin-bottom: 5px;
+        }
+
+        .nav-actions {
+            width: 100%;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .nav-link, .logout-btn {
+            width: 48%; /* Two items per row on small screens */
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+    }
+</style>
