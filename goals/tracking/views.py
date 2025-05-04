@@ -5,6 +5,7 @@ from datetime import timedelta
 from django.db.models import Avg, F, ExpressionWrapper, FloatField, Q
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.urls import reverse
 from .models import Goal
 from .forms import GoalForm
 
@@ -94,9 +95,10 @@ def add_goal(request):
             
             # Redirect back to parent if this was a subtask creation
             if parent_goal:
-                return redirect(f'/?parent_id={parent_goal.id}')
+                return redirect(f'{reverse("goals")}?parent_id={parent_goal.id}')
             return redirect('goals')
     else:
+        # Set today's date as default for start field for new goals
         initial_data = {'start': timezone.now().date()}
         if parent_goal:
             # Wenn Unterziel erstellt wird, verwende die Kategorie des Elternziels
@@ -132,9 +134,10 @@ def update_goal(request, goal_id):
             
             # Redirect back to parent if this is a subtask
             if goal.parent:
-                return redirect(f'/?parent_id={goal.parent.id}')
+                return redirect(f'{reverse("goals")}?parent_id={goal.parent.id}')
             return redirect('goals')
     else:
+        # Make sure to preserve the date values by passing the instance to the form
         form = GoalForm(instance=goal, user=request.user)
     
     return render(request, 'tracking/add_update_goal.html', {
@@ -161,7 +164,7 @@ def delete_goal(request, goal_id):
         
         # Redirect back to parent if this was a subtask
         if parent:
-            return redirect(f'/?parent_id={parent.id}')
+            return redirect(f'{reverse("goals")}?parent_id={parent.id}')
         return redirect('goals')
     
     return render(request, 'tracking/delete_goal.html', {'goal': goal})
@@ -176,7 +179,7 @@ def update_progress(request, goal_id):
         
         # Redirect back to parent if this is a subtask
         if goal.parent:
-            return redirect(f'/?parent_id={goal.parent.id}')
+            return redirect(f'{reverse("goals")}?parent_id={goal.parent.id}')
         return redirect('goals')
     
     if request.method == 'POST':
@@ -203,5 +206,5 @@ def update_progress(request, goal_id):
     
     # Redirect back to parent if this is a subtask
     if goal.parent:
-        return redirect(f'/?parent_id={goal.parent.id}')
+        return redirect(f'{reverse("goals")}?parent_id={goal.parent.id}')
     return redirect('goals')

@@ -3,6 +3,7 @@ from django import forms
 from .models import Goal
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 class GoalForm(forms.ModelForm):
     class Meta:
@@ -14,8 +15,9 @@ class GoalForm(forms.ModelForm):
             'ziel_wert': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Zielwert'}),
             'fortschritt': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Aktueller Fortschritt'}),
             'einheit': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'z.B. km, Bücher, €'}),
-            'start': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'end': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            # Ensure proper date formatting for HTML5 date inputs
+            'start': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}, format='%Y-%m-%d'),
+            'end': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}, format='%Y-%m-%d'),
             'kategorie': forms.Select(attrs={'class': 'form-control'}),
             'parent': forms.Select(attrs={'class': 'form-control'}),
             'auto_calculate': forms.CheckboxInput(attrs={'class': 'form-check-input'})
@@ -24,6 +26,10 @@ class GoalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+        
+        # Set default start date for new goals (when instance is None)
+        if not self.instance.pk and not self.initial.get('start'):
+            self.initial['start'] = timezone.now().date()
         
         if user:
             # Filter nur Hauptziele dieses Benutzers als mögliche Elternziele

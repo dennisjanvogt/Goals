@@ -483,7 +483,7 @@
         {% with subtask_count=goal.subtasks.count %}
         {% if subtask_count > 0 %}
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef;">
-            <a href="?parent_id={{ goal.id }}" style="display: flex; align-items: center; justify-content: center; padding: 8px; background-color: #f8f9fa; border-radius: 6px; color: #4a6fdc; text-decoration: none; font-weight: 600;">
+            <a href="{% url 'goals' %}?parent_id={{ goal.id }}" style="display: flex; align-items: center; justify-content: center; padding: 8px; background-color: #f8f9fa; border-radius: 6px; color: #4a6fdc; text-decoration: none; font-weight: 600;">
                 <span>{{ subtask_count }} Unterziel{% if subtask_count > 1 %}e{% endif %} anzeigen</span>
             </a>
         </div>
