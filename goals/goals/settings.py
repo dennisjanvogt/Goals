@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d)8&ki07=!b@kbvo6@6dpre#*#0)t=(k#l5@&yl9=@i)!3(49^'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-d)8&ki07=!b@kbvo6@6dpre#*#0)t=(k#l5@&yl9=@i)!3(49^')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['www.bisasam.com', 'bisasam.com', 'localhost', '0.0.0.0']
+ALLOWED_HOSTS = ['www.bisasam.com', 'bisasam.com', 'localhost', '0.0.0.0', '127.0.0.1']
 
 
 # Application definition
@@ -72,19 +76,31 @@ TEMPLATES = [
 WSGI_APPLICATION = 'goals.wsgi.application'
 
 
-# Database
+# Database configuration based on environment
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'goals',
-        'USER': 'sammy',
-        'PASSWORD': 'Asdfghjkl1234..',
-        'HOST': 'localhost',
-        'PORT': '',
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'production')
+
+if ENVIRONMENT == 'development':
+    # Use SQLite for development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'goals.sqlite3',
+        }
     }
-}
+else:
+    # Use PostgreSQL for production
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ.get('DB_NAME', 'goals'),
+            'USER': os.environ.get('DB_USER', 'sammy'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', 'Asdfghjkl1234..'),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', ''),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -132,3 +148,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Add this to settings.py
 LOGIN_REDIRECT_URL = 'goals'
 LOGOUT_REDIRECT_URL = 'login'
+
+# Log the current database configuration
+print(f"Using {ENVIRONMENT} environment with {DATABASES['default']['ENGINE']} database")

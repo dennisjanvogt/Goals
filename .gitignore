@@ -1,3 +1,52 @@
-/.DS_Store
-/venv
-/static
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+goals.sqlite3
+media
+
+# Environment variables
+.env
+.env.local
+
+# Static files
+staticfiles/
+static/
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE-specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Database backups
+*.dump
+*.json
