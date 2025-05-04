@@ -1,4 +1,4 @@
-<!-- tracking/templates/tracking/base.html -->
+<!-- Update this in tracking/templates/tracking/base.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="de">
@@ -6,6 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>{% block title %}Ziel-Tracker{% endblock %}</title>
+    <!-- Lucide Icons CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- Custom VSCode style icons -->
+    <link rel="stylesheet" href="{% static 'css/icons.css' %}">
     <style>
         :root {
         --primary: #4a6fdc;
@@ -19,6 +24,10 @@
         --career: #9b59b6;
         --learning: #e74c3c; /* Neue Farbe für Lernen */
         --other: #7f8c8d;   /* Neue Farbe für Sonstiges */
+        /* VSCode-inspired colors */
+        --vsc-bg: #1e1e1e;
+        --vsc-sidebar: #252526;
+        --vsc-highlight: #3a3d41;
     }
 
         * {
@@ -115,6 +124,10 @@
         {% block content %}{% endblock %}
     </div>
 
+    <!-- Initialize Lucide icons -->
+    <script>
+        lucide.createIcons();
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

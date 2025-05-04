@@ -330,7 +330,10 @@
             {{ form.description }}
         </div>
         <div style="text-align: right;">
-            <button type="submit" class="btn btn-primary">Aufgabe hinzufügen</button>
+            <button type="submit" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px;">
+                <i data-lucide="plus-circle" class="vsc-icon vsc-icon-add" style="width: 18px; height: 18px;"></i>
+                Aufgabe hinzufügen
+            </button>
         </div>
     </form>
 </div>
@@ -362,8 +365,14 @@
                     {% endif %}
                 </div>
                 <div class="todo-actions">
-                    <a href="{% url 'edit_todo' todo.id %}" class="btn btn-sm btn-light">Bearbeiten</a>
-                    <a href="{% url 'delete_todo' todo.id %}" class="btn btn-sm btn-danger">Löschen</a>
+                    <a href="{% url 'edit_todo' todo.id %}" class="btn btn-sm btn-light" style="display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="edit" class="vsc-icon vsc-icon-edit" style="width: 14px; height: 14px;"></i>
+                        Bearbeiten
+                    </a>
+                    <a href="{% url 'delete_todo' todo.id %}" class="btn btn-sm btn-danger" style="display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="trash-2" class="vsc-icon vsc-icon-delete" style="width: 14px; height: 14px;"></i>
+                        Löschen
+                    </a>
                 </div>
             </div>
         {% empty %}
@@ -396,8 +405,14 @@
                     {% endif %}
                 </div>
                 <div class="todo-actions">
-                    <a href="{% url 'edit_todo' todo.id %}" class="btn btn-sm btn-light">Bearbeiten</a>
-                    <a href="{% url 'delete_todo' todo.id %}" class="btn btn-sm btn-danger">Löschen</a>
+                    <a href="{% url 'edit_todo' todo.id %}" class="btn btn-sm btn-light" style="display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="edit" class="vsc-icon vsc-icon-edit" style="width: 14px; height: 14px;"></i>
+                        Bearbeiten
+                    </a>
+                    <a href="{% url 'delete_todo' todo.id %}" class="btn btn-sm btn-danger" style="display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="trash-2" class="vsc-icon vsc-icon-delete" style="width: 14px; height: 14px;"></i>
+                        Löschen
+                    </a>
                 </div>
             </div>
         {% empty %}
@@ -430,8 +445,14 @@
                     {% endif %}
                 </div>
                 <div class="todo-actions">
-                    <a href="{% url 'edit_todo' todo.id %}" class="btn btn-sm btn-light">Bearbeiten</a>
-                    <a href="{% url 'delete_todo' todo.id %}" class="btn btn-sm btn-danger">Löschen</a>
+                    <a href="{% url 'edit_todo' todo.id %}" class="btn btn-sm btn-light" style="display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="edit" class="vsc-icon vsc-icon-edit" style="width: 14px; height: 14px;"></i>
+                        Bearbeiten
+                    </a>
+                    <a href="{% url 'delete_todo' todo.id %}" class="btn btn-sm btn-danger" style="display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="trash-2" class="vsc-icon vsc-icon-delete" style="width: 14px; height: 14px;"></i>
+                        Löschen
+                    </a>
                 </div>
             </div>
         {% empty %}
@@ -464,8 +485,14 @@
                     {% endif %}
                 </div>
                 <div class="todo-actions">
-                    <a href="{% url 'edit_todo' todo.id %}" class="btn btn-sm btn-light">Bearbeiten</a>
-                    <a href="{% url 'delete_todo' todo.id %}" class="btn btn-sm btn-danger">Löschen</a>
+                    <a href="{% url 'edit_todo' todo.id %}" class="btn btn-sm btn-light" style="display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="edit" class="vsc-icon vsc-icon-edit" style="width: 14px; height: 14px;"></i>
+                        Bearbeiten
+                    </a>
+                    <a href="{% url 'delete_todo' todo.id %}" class="btn btn-sm btn-danger" style="display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="trash-2" class="vsc-icon vsc-icon-delete" style="width: 14px; height: 14px;"></i>
+                        Löschen
+                    </a>
                 </div>
             </div>
         {% empty %}
@@ -484,7 +511,10 @@
             <span>{{ todo.title }}</span>
             <form method="post" action="{% url 'toggle_complete' todo.id %}" style="display: inline;">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-light">Wiederherstellen</button>
+                <button type="submit" class="btn btn-sm btn-light" style="display: flex; align-items: center; gap: 4px;">
+                    <i data-lucide="rotate-ccw" class="vsc-icon" style="width: 14px; height: 14px;"></i>
+                    Wiederherstellen
+                </button>
             </form>
         </div>
     {% endfor %}

@@ -1,11 +1,11 @@
-<!-- tracking/templates/tracking/navbar.html -->
+<!-- Update this in tracking/templates/tracking/navbar.html -->
 {% extends 'home/base_navbar.html' %}
 
 {% block app_specific_nav %}
     <a href="{% url 'goals' %}" class="nav-link {% if request.resolver_match.url_name == 'goals' %}active{% endif %}">
-        <i class="nav-icon">📊</i>Übersicht
+        <i data-lucide="bar-chart-2" class="vsc-icon vsc-icon-goals"></i>Übersicht
     </a>
     <a href="{% url 'add_goal' %}" class="nav-link {% if request.resolver_match.url_name == 'add_goal' %}active{% endif %}">
-        <i class="nav-icon">➕</i>Neues Ziel
+        <i data-lucide="plus-circle" class="vsc-icon vsc-icon-add"></i>Neues Ziel
     </a>
 {% endblock %}

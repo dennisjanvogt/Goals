@@ -60,11 +60,80 @@
             gap: 20px;
         }
 
+        <!-- Update this in home/templates/home/landing.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Bisasam - Startseite</title>
+    <!-- Lucide Icons CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- Custom VSCode style icons -->
+    <link rel="stylesheet" href="{% static 'css/icons.css' %}">
+    <style>
+        :root {
+            --primary: #4a6fdc;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f8ff;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-nav {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .nav-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+        }
+
         .user-greeting {
             color: #666;
             font-size: 0.9rem;
             padding-right: 15px;
             border-right: 1px solid #eee;
+            display: flex;
+            align-items: center;
         }
 
         .nav-actions {
@@ -74,12 +143,14 @@
         }
 
         .btn {
-            display: inline-block;
+            display: inline-flex;
             text-decoration: none;
             padding: 8px 16px;
             border-radius: 6px;
             font-weight: 600;
             transition: all 0.3s;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
@@ -198,8 +269,18 @@
         }
 
         .app-icon {
-            font-size: 4rem;
             margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 5rem;
+            height: 5rem;
+        }
+
+        .app-icon i {
+            width: 100%;
+            height: 100%;
+            stroke-width: 1;
         }
 
         .app-body {
@@ -219,6 +300,7 @@
         .app-cta .btn {
             padding: 12px 30px;
             font-size: 1.1rem;
+            justify-content: center;
         }
 
         footer {
@@ -267,22 +349,26 @@
             <div class="nav-links">
                 {% if user.is_authenticated %}
                     <div class="user-greeting">
+                        <i data-lucide="user" class="vsc-icon vsc-icon-user"></i>
                         <span>Hallo, {{ user.username }}</span>
                     </div>
                     <div class="nav-actions">
                         <form action="{% url 'logout' %}" method="post" class="logout-form">
                             {% csrf_token %}
                             <button type="submit" class="logout-btn">
-                                <i class="nav-icon">🚪</i>Abmelden
+                                <i data-lucide="log-out" class="vsc-icon vsc-icon-logout"></i>
+                                Abmelden
                             </button>
                         </form>
                     </div>
                 {% else %}
                     <div class="nav-actions">
                         <a href="{% url 'login' %}" class="btn btn-light">
+                            <i data-lucide="log-in" class="vsc-icon"></i>
                             Anmelden
                         </a>
                         <a href="{% url 'register' %}" class="btn btn-primary">
+                            <i data-lucide="user-plus" class="vsc-icon"></i>
                             Registrieren
                         </a>
                     </div>
@@ -299,7 +385,9 @@
     <div class="app-container">
         <div class="app-card">
             <div class="app-header goals-header">
-                <div class="app-icon">📊</div>
+                <div class="app-icon">
+                    <i data-lucide="bar-chart-2" class="vsc-icon"></i>
+                </div>
                 <h2>Ziel-Tracker</h2>
                 <p>Definiere und verfolge deine Ziele</p>
             </div>
@@ -308,14 +396,19 @@
                     <p>Mit dem Ziel-Tracker kannst du deine persönlichen Ziele in verschiedenen Kategorien wie Gesundheit, Finanzen und Karriere setzen und deinen Fortschritt verfolgen. Organisiere Ziele in Haupt- und Unterziele für besseren Überblick.</p>
                 </div>
                 <div class="app-cta">
-                    <a href="{% url 'goals' %}" class="btn btn-primary">Zu meinen Zielen</a>
+                    <a href="{% url 'goals' %}" class="btn btn-primary">
+                        <i data-lucide="target" class="vsc-icon"></i>
+                        Zu meinen Zielen
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="app-card">
             <div class="app-header todo-header">
-                <div class="app-icon">📝</div>
+                <div class="app-icon">
+                    <i data-lucide="check-square" class="vsc-icon"></i>
+                </div>
                 <h2>Todo-Liste</h2>
                 <p>Organisiere deine täglichen Aufgaben</p>
             </div>
@@ -324,7 +417,10 @@
                     <p>Mit der Todo-Liste behältst du den Überblick über all deine anstehenden Aufgaben. Ordne sie nach Priorität, setze Fälligkeitsdaten und markiere sie als erledigt, wenn du sie abgeschlossen hast.</p>
                 </div>
                 <div class="app-cta">
-                    <a href="{% url 'todo_list' %}" class="btn btn-primary">Zu meinen Todos</a>
+                    <a href="{% url 'todo_list' %}" class="btn btn-primary">
+                        <i data-lucide="list-checks" class="vsc-icon"></i>
+                        Zu meinen Todos
+                    </a>
                 </div>
             </div>
         </div>
@@ -333,5 +429,10 @@
     <footer>
         <p>&copy; 2025 Bisasam.</p>
     </footer>
+    
+    <!-- Initialize Lucide icons -->
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

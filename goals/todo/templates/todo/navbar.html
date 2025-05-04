@@ -1,11 +1,11 @@
-<!-- todo/templates/todo/navbar.html -->
+<!-- Update this in todo/templates/todo/navbar.html -->
 {% extends 'home/base_navbar.html' %}
 
 {% block app_specific_nav %}
     <a href="{% url 'todo_list' %}" class="nav-link {% if request.resolver_match.url_name == 'todo_list' %}active{% endif %}">
-        <i class="nav-icon">📝</i>Aufgaben
+        <i data-lucide="check-square" class="vsc-icon vsc-icon-todo"></i>Aufgaben
     </a>
     <a href="{% url 'add_todo' %}" class="nav-link {% if request.resolver_match.url_name == 'add_todo' %}active{% endif %}">
-        <i class="nav-icon">➕</i>Neue Aufgabe
+        <i data-lucide="plus-square" class="vsc-icon vsc-icon-add"></i>Neue Aufgabe
     </a>
 {% endblock %}
