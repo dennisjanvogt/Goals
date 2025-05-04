@@ -16,6 +16,9 @@
                     <a href="{% url 'add_goal' %}" class="nav-link {% if request.resolver_match.url_name == 'add_goal' %}active{% endif %}">
                         <i class="nav-icon">➕</i>Neues Ziel
                     </a>
+                    <a href="{% url 'todo_list' %}" class="nav-link {% if request.resolver_match.url_name == 'todo_list' %}active{% endif %}">
+                        <i class="nav-icon">📝</i>Todos
+                    </a>
                     <form action="{% url 'logout' %}" method="post" class="logout-form">
                         {% csrf_token %}
                         <button type="submit" class="logout-btn">
