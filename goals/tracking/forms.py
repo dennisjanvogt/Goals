@@ -4,6 +4,7 @@ from .models import Goal
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from .models import YearlyGoal
 
 class GoalForm(forms.ModelForm):
     class Meta:
@@ -106,3 +107,32 @@ class CustomAuthenticationForm(AuthenticationForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Passwort'}),
     )
+
+
+
+class YearlyGoalForm(forms.ModelForm):
+    class Meta:
+        model = YearlyGoal
+        fields = ['title', 'description', 'year', 'start_value', 'target_value', 'unit',
+                 'january', 'february', 'march', 'april', 'may', 'june',
+                 'july', 'august', 'september', 'october', 'november', 'december']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Titel des Jahresziels'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Beschreibung des Jahresziels'}),
+            'year': forms.Select(attrs={'class': 'form-control'}),
+            'start_value': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Anfangswert'}),
+            'target_value': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Zielwert'}),
+            'unit': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Einheit (z.B. Abonnenten, kg, €)'}),
+            'january': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Januar'}),
+            'february': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Februar'}),
+            'march': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'März'}),
+            'april': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'April'}),
+            'may': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Mai'}),
+            'june': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Juni'}),
+            'july': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Juli'}),
+            'august': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'August'}),
+            'september': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'September'}),
+            'october': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Oktober'}),
+            'november': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'November'}),
+            'december': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Dezember'}),
+        }

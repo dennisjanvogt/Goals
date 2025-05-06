@@ -1,0 +1,98 @@
+{% extends 'tracking/base.html' %}
+{% load static %}
+
+{% block title %}Jahresziel löschen{% endblock %}
+
+{% block extra_css %}
+<style>
+    .delete-container {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .warning-icon {
+        font-size: 4rem;
+        color: var(--danger);
+        margin-bottom: 20px;
+    }
+    
+    .delete-message {
+        margin-bottom: 30px;
+    }
+    
+    .goal-info {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+    
+    .goal-info h3 {
+        margin-bottom: 10px;
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .btn {
+        display: inline-block;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .btn-danger {
+        background-color: var(--danger);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background-color: #e9ecef;
+        color: #333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Jahresziel löschen</h1>
+    <p>Bestätige die Löschung des Jahresziels</p>
+</div>
+
+<div class="delete-container">
+    <div class="warning-icon">⚠️</div>
+    
+    <div class="delete-message">
+        <p>Bist du sicher, dass du das folgende Jahresziel dauerhaft löschen möchtest?</p>
+        <p><strong>Diese Aktion kann nicht rückgängig gemacht werden!</strong></p>
+    </div>
+    
+    <div class="goal-info">
+        <h3>{{ yearly_goal.title }} ({{ yearly_goal.year }})</h3>
+        <p>{{ yearly_goal.description }}</p>
+        <p>Einheit: {{ yearly_goal.unit }}</p>
+        <p>Anfangswert: {{ yearly_goal.start_value }}</p>
+        <p>Zielwert: {{ yearly_goal.target_value }}</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="action-buttons">
+            <a href="{% url 'yearly_goals' %}" class="btn btn-secondary">Abbrechen</a>
+            <button type="submit" class="btn btn-danger">Löschen bestätigen</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

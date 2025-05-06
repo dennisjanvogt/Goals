@@ -6,8 +6,8 @@ from django.db.models import Avg, F, ExpressionWrapper, FloatField, Q
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from .models import Goal
-from .forms import GoalForm
+from .models import Goal, YearlyGoal
+from .forms import GoalForm, YearlyGoalForm
 
 @login_required
 def goals_view(request):
@@ -208,3 +208,70 @@ def update_progress(request, goal_id):
     if goal.parent:
         return redirect(f'{reverse("goals")}?parent_id={goal.parent.id}')
     return redirect('goals')
+
+
+@login_required
+def yearly_goals(request):
+    """View to display all yearly goals"""
+    yearly_goals = YearlyGoal.objects.filter(user=request.user).order_by('-year', 'title')
+    
+    context = {
+        'yearly_goals': yearly_goals,
+    }
+    
+    return render(request, 'tracking/yearly_goals.html', context)
+
+@login_required
+def add_yearly_goal(request):
+    """View to add a new yearly goal"""
+    if request.method == 'POST':
+        form = YearlyGoalForm(request.POST)
+        if form.is_valid():
+            yearly_goal = form.save(commit=False)
+            yearly_goal.user = request.user
+            yearly_goal.save()
+            messages.success(request, 'Jahresziel erfolgreich erstellt!')
+            return redirect('yearly_goals')
+    else:
+        form = YearlyGoalForm()
+    
+    return render(request, 'tracking/add_yearly_goal.html', {
+        'form': form,
+        'title': 'Neues Jahresziel erstellen',
+        'button_text': 'Erstellen'
+    })
+
+@login_required
+def update_yearly_goal(request, goal_id):
+    """View to update an existing yearly goal"""
+    yearly_goal = get_object_or_404(YearlyGoal, id=goal_id, user=request.user)
+    
+    if request.method == 'POST':
+        form = YearlyGoalForm(request.POST, instance=yearly_goal)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Jahresziel erfolgreich aktualisiert!')
+            return redirect('yearly_goals')
+    else:
+        form = YearlyGoalForm(instance=yearly_goal)
+    
+    return render(request, 'tracking/add_yearly_goal.html', {
+        'form': form,
+        'yearly_goal': yearly_goal,
+        'title': 'Jahresziel bearbeiten',
+        'button_text': 'Aktualisieren'
+    })
+
+@login_required
+def delete_yearly_goal(request, goal_id):
+    """View to delete a yearly goal"""
+    yearly_goal = get_object_or_404(YearlyGoal, id=goal_id, user=request.user)
+    
+    if request.method == 'POST':
+        yearly_goal.delete()
+        messages.success(request, 'Jahresziel erfolgreich gelöscht!')
+        return redirect('yearly_goals')
+    
+    return render(request, 'tracking/delete_yearly_goal.html', {
+        'yearly_goal': yearly_goal
+    })

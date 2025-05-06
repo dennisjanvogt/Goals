@@ -1,0 +1,241 @@
+{% extends 'tracking/base.html' %}
+{% load static %}
+
+{% block title %}Meine Jahresziele{% endblock %}
+
+{% block extra_css %}
+<style>
+    .yearly-goals-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 24px;
+        margin-top: 30px;
+    }
+    
+    .yearly-goal-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+    
+    .yearly-goal-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .yearly-goal-header {
+        background: linear-gradient(135deg, var(--primary), #3a5dc2);
+        color: white;
+        padding: 16px 20px;
+        position: relative;
+    }
+    
+    .yearly-goal-title {
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+        padding-right: 80px;
+    }
+    
+    .yearly-goal-year {
+        position: absolute;
+        top: 16px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+    
+    .yearly-goal-body {
+        padding: 20px;
+    }
+    
+    .yearly-goal-description {
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .yearly-goal-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+    }
+    
+    .progress-container {
+        margin-bottom: 20px;
+    }
+    
+    .progress-bar {
+        height: 10px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        border-radius: 5px;
+        transition: width 0.5s ease;
+        background: linear-gradient(to right, var(--primary), #74b9ff);
+    }
+    
+    .monthly-values {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+    
+    .month-value {
+        text-align: center;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #f8f9fa;
+        font-size: 0.9rem;
+    }
+    
+    .month-name {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #555;
+    }
+    
+    .month-data {
+        color: var(--primary);
+        font-weight: 700;
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+    
+    .btn {
+        display: inline-block;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+    }
+    
+    .btn-light {
+        background-color: var(--light);
+        color: var(--dark);
+    }
+    
+    .btn-danger {
+        background-color: var(--danger);
+        color: white;
+    }
+    
+    .no-goals {
+        text-align: center;
+        grid-column: 1 / -1;
+        padding: 40px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .add-button {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Meine Jahresziele</h1>
+    <p>Verfolge die Entwicklung deiner langfristigen Ziele</p>
+    <a href="{% url 'add_yearly_goal' %}" class="add-goal-btn">
+        <i data-lucide="plus-circle" class="vsc-icon"></i>
+        Neues Jahresziel
+    </a>
+</div>
+
+<div class="yearly-goals-container">
+    {% for goal in yearly_goals %}
+    <div class="yearly-goal-card">
+        <div class="yearly-goal-header">
+            <h3 class="yearly-goal-title">{{ goal.title }}</h3>
+            <span class="yearly-goal-year">{{ goal.year }}</span>
+        </div>
+        <div class="yearly-goal-body">
+            <p class="yearly-goal-description">{{ goal.description }}</p>
+            
+            <div class="yearly-goal-stats">
+                <span>Start: {{ goal.start_value }} {{ goal.unit }}</span>
+                <span>Aktuell: {{ goal.get_current_value }} {{ goal.unit }}</span>
+                <span>Ziel: {{ goal.target_value }} {{ goal.unit }}</span>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ goal.get_progress_percentage }}%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #6c757d;">
+                    <span>0%</span>
+                    <span>{{ goal.get_progress_percentage|floatformat:0 }}%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+            
+            <h4 style="margin-bottom: 10px; font-size: 1.1rem;">Monatliche Werte</h4>
+            <div class="monthly-values">
+                {% for month, value in goal.get_monthly_values %}
+                    <div class="month-value">
+                        <div class="month-name">{{ month }}</div>
+                        <div class="month-data">
+                            {% if value %}
+                                {{ value }} {{ goal.unit }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{% url 'update_yearly_goal' goal.id %}" class="btn btn-light">
+                    <i data-lucide="edit" class="vsc-icon vsc-icon-edit"></i>
+                    Bearbeiten
+                </a>
+                <a href="{% url 'delete_yearly_goal' goal.id %}" class="btn btn-danger">
+                    <i data-lucide="trash-2" class="vsc-icon vsc-icon-delete"></i>
+                    Löschen
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="no-goals">
+        <h3>Keine Jahresziele gefunden</h3>
+        <p>Du hast noch keine Jahresziele erstellt.</p>
+        <div class="add-button">
+            <a href="{% url 'add_yearly_goal' %}" class="btn btn-primary">
+                <i data-lucide="plus-circle" class="vsc-icon"></i>
+                Jahresziel erstellen
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

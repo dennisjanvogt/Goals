@@ -5,6 +5,9 @@
     <a href="{% url 'goals' %}" class="nav-link {% if request.resolver_match.url_name == 'goals' %}active{% endif %}">
         <i data-lucide="bar-chart-2" class="vsc-icon vsc-icon-goals"></i>Übersicht
     </a>
+    <a href="{% url 'yearly_goals' %}" class="nav-link {% if request.resolver_match.url_name == 'yearly_goals' %}active{% endif %}">
+        <i data-lucide="calendar" class="vsc-icon vsc-icon-yearly"></i>Jahresziele
+    </a>
     <a href="{% url 'add_goal' %}" class="nav-link {% if request.resolver_match.url_name == 'add_goal' %}active{% endif %}">
         <i data-lucide="plus-circle" class="vsc-icon vsc-icon-add"></i>Neues Ziel
     </a>

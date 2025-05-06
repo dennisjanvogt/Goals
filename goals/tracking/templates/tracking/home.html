@@ -26,115 +26,84 @@
         background-color: #3a5dc2;
     }
 
-/* VSCode-style filter buttons */
-.filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 30px;
-}
+    /* Überarbeitete Filter-Buttons mit hellerem Design */
+    .filter-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
 
-.filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 2px; /* More squared-off like VSCode */
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: var(--vsc-highlight);
-    color: #cccccc;
-    border-left: 2px solid transparent;
-}
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        background-color: #f8f9fa;
+        color: #555;
+    }
 
-.filter-btn .vsc-icon {
-    width: 16px;
-    height: 16px;
-    stroke-width: 1.5;
-}
+    .filter-btn .vsc-icon {
+        width: 18px;
+        height: 18px;
+        stroke-width: 1.5;
+    }
 
-.filter-btn:hover {
-    background-color: rgba(90, 93, 94, 0.31);
-}
+    .filter-btn:hover {
+        background-color: #f0f0f0;
+        border-color: #d0d0d0;
+    }
 
-.filter-btn.active {
-    background-color: rgba(90, 93, 94, 0.31);
-    border-left: 2px solid;
-    font-weight: 500;
-}
+    .filter-btn.active {
+        background-color: #e9f0ff;
+        border-color: #c7d8ff;
+        color: var(--primary);
+        font-weight: 600;
+    }
 
-/* Category-specific styles */
-.filter-btn.all {
-    border-color: #cccccc;
-}
+    /* Kategoriespezifische Stile */
+    .filter-btn.all.active {
+        background-color: #e9f0ff;
+        border-color: #c7d8ff;
+        color: var(--primary);
+    }
 
-.filter-btn.all.active {
-    border-color: #cccccc;
-}
+    .filter-btn.health.active {
+        background-color: rgba(66, 184, 131, 0.15);
+        border-color: rgba(66, 184, 131, 0.3);
+        color: var(--health);
+    }
 
-.filter-btn.health {
-    border-color: var(--health);
-}
+    .filter-btn.finance.active {
+        background-color: rgba(241, 196, 15, 0.15);
+        border-color: rgba(241, 196, 15, 0.3);
+        color: var(--finance);
+    }
 
-.filter-btn.health.active {
-    border-color: var(--health);
-}
+    .filter-btn.career.active {
+        background-color: rgba(155, 89, 182, 0.15);
+        border-color: rgba(155, 89, 182, 0.3);
+        color: var(--career);
+    }
 
-.filter-btn.health .vsc-icon {
-    color: var(--health);
-}
+    .filter-btn.learning.active {
+        background-color: rgba(231, 76, 60, 0.15);
+        border-color: rgba(231, 76, 60, 0.3);
+        color: var(--learning);
+    }
 
-.filter-btn.finance {
-    border-color: var(--finance);
-}
-
-.filter-btn.finance.active {
-    border-color: var(--finance);
-}
-
-.filter-btn.finance .vsc-icon {
-    color: var(--finance);
-}
-
-.filter-btn.career {
-    border-color: var(--career);
-}
-
-.filter-btn.career.active {
-    border-color: var(--career);
-}
-
-.filter-btn.career .vsc-icon {
-    color: var(--career);
-}
-
-.filter-btn.learning {
-    border-color: var(--learning);
-}
-
-.filter-btn.learning.active {
-    border-color: var(--learning);
-}
-
-.filter-btn.learning .vsc-icon {
-    color: var(--learning);
-}
-
-.filter-btn.other {
-    border-color: var(--other);
-}
-
-.filter-btn.other.active {
-    border-color: var(--other);
-}
-
-.filter-btn.other .vsc-icon {
-    color: var(--other);
-}
+    .filter-btn.other.active {
+        background-color: rgba(127, 140, 141, 0.15);
+        border-color: rgba(127, 140, 141, 0.3);
+        color: var(--other);
+    }
 
     .goals-container {
         display: grid;
@@ -260,32 +229,6 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
-    .statistic-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 20px;
-        margin-bottom: 40px;
-    }
-
-    .stat-card {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        text-align: center;
-    }
-
-    .stat-value {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
-
-    .stat-label {
-        color: #6c757d;
-        font-size: 0.9rem;
-    }
-
     .btn {
         display: inline-block;
         text-decoration: none;
@@ -318,45 +261,42 @@
         .filter-container {
             flex-wrap: wrap;
         }
-
-        .statistic-cards {
-            grid-template-columns: 1fr;
-        }
+        
         .filter-btn.learning {
-        border: 2px solid var(--learning);
-    }
-    
-    .filter-btn.learning.active {
-        background-color: var(--learning);
-    }
-    
-    .filter-btn.other {
-        border: 2px solid var(--other);
-    }
-    
-    .filter-btn.other.active {
-        background-color: var(--other);
-    }
-    
-    /* Zielkarten Styles für neue Kategorien */
-    .goal-card.Lernen::before {
-        background-color: var(--learning);
-    }
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        .filter-btn.learning.active {
+            background-color: rgba(231, 76, 60, 0.15);
+        }
+        
+        .filter-btn.other {
+            border: 1px solid rgba(127, 140, 141, 0.3);
+        }
+        
+        .filter-btn.other.active {
+            background-color: rgba(127, 140, 141, 0.15);
+        }
+        
+        /* Zielkarten Styles für neue Kategorien */
+        .goal-card.Lernen::before {
+            background-color: var(--learning);
+        }
 
-    .goal-card.Sonstiges::before {
-        background-color: var(--other);
-    }
-    
-    /* Badges für neue Kategorien */
-    .category-badge.Lernen {
-        background-color: rgba(231, 76, 60, 0.15);
-        color: var(--learning);
-    }
+        .goal-card.Sonstiges::before {
+            background-color: var(--other);
+        }
+        
+        /* Badges für neue Kategorien */
+        .category-badge.Lernen {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: var(--learning);
+        }
 
-    .category-badge.Sonstiges {
-        background-color: rgba(127, 140, 141, 0.15);
-        color: var(--other);
-    }
+        .category-badge.Sonstiges {
+            background-color: rgba(127, 140, 141, 0.15);
+            color: var(--other);
+        }
     }
 </style>
 {% endblock %}
@@ -365,31 +305,6 @@
 <div class="header">
     <h1>Meine Ziele Übersicht</h1>
     <p>Verfolge deinen Fortschritt und erreiche deine Ziele</p>
-</div>
-
-<div class="statistic-cards">
-    <div class="stat-card">
-        <div class="stat-value" id="total-goals">{{ goals|length }}</div>
-        <div class="stat-label">Gesamtziele</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-value" id="completed-goals">{{ avg_progress|floatformat:0 }}%</div>
-        <div class="stat-label">Durchschnittlicher Fortschritt</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-value" id="active-goals">{{ active_goals }}</div>
-        <div class="stat-label">Aktive Ziele</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-value" id="nearest-deadline">
-            {% if nearest_deadline %}
-                {{ nearest_deadline|date:"d.m.Y" }}
-            {% else %}
-                -
-            {% endif %}
-        </div>
-        <div class="stat-label">Nächste Fälligkeit</div>
-    </div>
 </div>
 
 {% if selected_goal %}
@@ -693,3 +608,62 @@
     });
 </script>
 {% endblock %}
+
+<!-- Add this at the end of the content block in tracking/templates/tracking/home.html -->
+{% if not selected_goal %}
+<!-- Yearly Goals Section -->
+<div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+    <h2 style="margin-bottom: 20px; text-align: center;">Meine Jahresziele</h2>
+    
+    {% with yearly_goals=request.user.yearly_goals.all %}
+    {% if yearly_goals %}
+    <div class="yearly-goals-preview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px;">
+        {% for goal in yearly_goals|slice:":3" %}
+        <div class="yearly-goal-card" style="background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); overflow: hidden;">
+            <div style="background: linear-gradient(135deg, var(--primary), #3a5dc2); color: white; padding: 15px 20px; position: relative;">
+                <h3 style="font-size: 1.2rem; margin-bottom: 5px; padding-right: 60px;">{{ goal.title }}</h3>
+                <span style="position: absolute; top: 15px; right: 15px; background: rgba(255, 255, 255, 0.2); padding: 3px 8px; border-radius: 15px; font-size: 0.85rem;">{{ goal.year }}</span>
+            </div>
+            
+            <div style="padding: 15px 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem;">
+                    <span>Start: {{ goal.start_value }} {{ goal.unit }}</span>
+                    <span>Ziel: {{ goal.target_value }} {{ goal.unit }}</span>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="height: 8px; background-color: #e9ecef; border-radius: 4px; overflow: hidden;">
+                        <div style="height: 100%; border-radius: 4px; background: linear-gradient(to right, var(--primary), #74b9ff); width: {{ goal.get_progress_percentage }}%;"></div>
+                    </div>
+                    <div style="margin-top: 5px; text-align: right; font-size: 0.85rem;">{{ goal.get_progress_percentage|floatformat:0 }}%</div>
+                </div>
+                
+                <div style="text-align: right;">
+                    <a href="{% url 'update_yearly_goal' goal.id %}" style="text-decoration: none; color: var(--primary); font-weight: 500; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px;">
+                        <i data-lucide="edit" class="vsc-icon" style="width: 16px; height: 16px;"></i>
+                        Bearbeiten
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="{% url 'yearly_goals' %}" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+            <i data-lucide="calendar" class="vsc-icon"></i>
+            Alle Jahresziele anzeigen
+        </a>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+        <p style="margin-bottom: 20px;">Du hast noch keine Jahresziele definiert.</p>
+        <a href="{% url 'add_yearly_goal' %}" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+            <i data-lucide="plus-circle" class="vsc-icon"></i>
+            Jahresziel erstellen
+        </a>
+    </div>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endif %}
