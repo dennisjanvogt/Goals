@@ -50,3 +50,4 @@ ENV/
 # Database backups
 *.dump
 *.json
+notes.txt

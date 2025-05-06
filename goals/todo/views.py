@@ -16,16 +16,12 @@ def todo_list(request):
     no_priority = Todo.objects.filter(user=request.user, priority='none', completed=False)
     completed_todos = Todo.objects.filter(user=request.user, completed=True).order_by('-created_at')[:5]
     
-    # New todo form
-    form = TodoForm()
-    
     context = {
         'high_priority': high_priority,
         'medium_priority': medium_priority,
         'low_priority': low_priority,
         'no_priority': no_priority,
         'completed_todos': completed_todos,
-        'form': form,
     }
     
     return render(request, 'todo/todo_list.html', context)
@@ -38,7 +34,7 @@ def add_todo(request):
             todo = form.save(commit=False)
             todo.user = request.user
             todo.save()
-            messages.success(request, 'Todo erfolgreich hinzugefügt!')
+            messages.success(request, 'Aufgabe erfolgreich hinzugefügt!')
             return redirect('todo_list')
     else:
         form = TodoForm()
@@ -53,7 +49,7 @@ def edit_todo(request, todo_id):
         form = TodoForm(request.POST, instance=todo)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Todo erfolgreich aktualisiert!')
+            messages.success(request, 'Aufgabe erfolgreich aktualisiert!')
             return redirect('todo_list')
     else:
         form = TodoForm(instance=todo)
@@ -74,7 +70,7 @@ def delete_todo(request, todo_id):
     
     if request.method == 'POST':
         todo.delete()
-        messages.success(request, 'Todo erfolgreich gelöscht!')
+        messages.success(request, 'Aufgabe erfolgreich gelöscht!')
         return redirect('todo_list')
     
     return render(request, 'todo/delete_todo.html', {'todo': todo})

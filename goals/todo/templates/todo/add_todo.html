@@ -229,7 +229,10 @@
         
         <div class="form-actions">
             <a href="{% url 'todo_list' %}" class="btn btn-secondary">Abbrechen</a>
-            <button type="submit" class="btn btn-primary">Aufgabe erstellen</button>
+            <button type="submit" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px;">
+                <i data-lucide="plus-circle" class="vsc-icon vsc-icon-add" style="width: 18px; height: 18px;"></i>
+                Aufgabe hinzufügen
+            </button>
         </div>
     </form>
 </div>

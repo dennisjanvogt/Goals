@@ -12,11 +12,12 @@
         --none-color: #7f8c8d;
     }
 
-    .todo-container {
+    /* Layout für die 3 Prioritätsspalten oben */
+    .priority-columns {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
 
     .todo-column {
@@ -164,84 +165,6 @@
         cursor: pointer;
     }
 
-    /* Verbesserte Formular-Styles */
-    .add-todo-form {
-        background-color: white;
-        border-radius: 12px;
-        padding: 25px;
-        margin-bottom: 30px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-    }
-
-    .form-header {
-        margin-bottom: 25px;
-        border-bottom: 2px solid #f5f5f5;
-        padding-bottom: 15px;
-    }
-
-    .form-header h3 {
-        font-size: 1.5rem;
-        color: #333;
-        font-weight: 600;
-    }
-
-    .form-group {
-        margin-bottom: 22px;
-        position: relative;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #333;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background-color: #f9f9f9;
-    }
-
-    .form-control:focus {
-        border-color: var(--primary);
-        background-color: #fff;
-        box-shadow: 0 0 0 3px rgba(74, 111, 220, 0.15);
-        outline: none;
-    }
-
-    .form-control::placeholder {
-        color: #adb5bd;
-        opacity: 0.8;
-    }
-
-    select.form-control {
-        cursor: pointer;
-        padding-right: 30px;
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        background-size: 16px;
-    }
-
-    textarea.form-control {
-        min-height: 100px;
-        resize: vertical;
-    }
-
-    .form-row {
-        display: flex;
-        gap: 20px;
-        margin-bottom: 5px;
-    }
-
     .btn {
         display: inline-block;
         padding: 10px 20px;
@@ -266,6 +189,50 @@
         box-shadow: 0 4px 8px rgba(74, 111, 220, 0.2);
     }
 
+    /* Styles für die Todos ohne Priorität */
+    .no-priority-section {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+    
+    .no-priority-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--none-color);
+        cursor: pointer;
+    }
+    
+    .no-priority-header h3 {
+        font-size: 1.3rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .toggle-icon {
+        transition: transform 0.3s ease;
+    }
+    
+    .toggle-icon.open {
+        transform: rotate(180deg);
+    }
+    
+    .no-priority-content {
+        display: none;
+        padding-top: 15px;
+    }
+    
+    .no-priority-content.open {
+        display: block;
+    }
+    
     .completed-section {
         background-color: white;
         border-radius: 8px;
@@ -285,18 +252,26 @@
         justify-content: space-between;
     }
 
+    .add-new-button {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .priority-columns {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
     @media (max-width: 768px) {
-        .todo-container {
-            display: block;
+        .priority-columns {
+            grid-template-columns: 1fr;
         }
         
         .todo-column {
             margin-bottom: 20px;
-        }
-        
-        .form-row {
-            flex-direction: column;
-            gap: 15px;
         }
     }
 </style>
@@ -308,38 +283,16 @@
     <p>Organisiere deine Aufgaben nach Priorität</p>
 </div>
 
-<!-- Add new Todo form -->
-<div class="add-todo-form">
-    <div class="form-header">
-        <h3>Neue Aufgabe hinzufügen</h3>
-    </div>
-    <form method="post" action="{% url 'add_todo' %}">
-        {% csrf_token %}
-        <div class="form-row">
-            <div class="form-group" style="flex: 2;">
-                {{ form.title }}
-            </div>
-            <div class="form-group">
-                {{ form.priority }}
-            </div>
-            <div class="form-group">
-                {{ form.due_date }}
-            </div>
-        </div>
-        <div class="form-group">
-            {{ form.description }}
-        </div>
-        <div style="text-align: right;">
-            <button type="submit" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px;">
-                <i data-lucide="plus-circle" class="vsc-icon vsc-icon-add" style="width: 18px; height: 18px;"></i>
-                Aufgabe hinzufügen
-            </button>
-        </div>
-    </form>
+<!-- Add new task button -->
+<div class="add-new-button">
+    <a href="{% url 'add_todo' %}" class="btn btn-primary" style="display: flex; align-items: center; gap: 10px;">
+        <i data-lucide="plus-circle" class="vsc-icon vsc-icon-add" style="width: 18px; height: 18px;"></i>
+        Neue Aufgabe hinzufügen
+    </a>
 </div>
 
-<!-- Todo columns container -->
-<div class="todo-container">
+<!-- Prioritized Todo columns container -->
+<div class="priority-columns">
     <!-- High priority column -->
     <div class="todo-column high-priority">
         <div class="column-header">
@@ -459,14 +412,19 @@
             <p class="text-center" style="color: #888; padding: 20px;">Keine Aufgaben mit niedriger Priorität</p>
         {% endfor %}
     </div>
-    
-    <!-- No priority column -->
-    <div class="todo-column no-priority">
-        <div class="column-header">
-            <h3 class="column-title">Keine Priorität</h3>
+</div>
+
+<!-- No priority section (collapsible) -->
+<div class="no-priority-section">
+    <div class="no-priority-header" id="toggle-no-priority">
+        <h3>
+            <span>Keine Priorität</span>
             <span class="column-count">{{ no_priority|length }}</span>
-        </div>
-        
+        </h3>
+        <i data-lucide="chevron-down" class="toggle-icon" id="toggle-icon"></i>
+    </div>
+    
+    <div class="no-priority-content" id="no-priority-content">
         {% for todo in no_priority %}
             <div class="todo-item no-priority" draggable="true" data-todo-id="{{ todo.id }}" data-priority="none">
                 <div class="drag-handle">⋮⋮</div>
@@ -525,9 +483,19 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Toggle für Aufgaben ohne Priorität
+    const toggleHeader = document.getElementById('toggle-no-priority');
+    const toggleIcon = document.getElementById('toggle-icon');
+    const noPriorityContent = document.getElementById('no-priority-content');
+    
+    toggleHeader.addEventListener('click', function() {
+        noPriorityContent.classList.toggle('open');
+        toggleIcon.classList.toggle('open');
+    });
+    
     // Alle Elements sammeln
     const todoItems = document.querySelectorAll('.todo-item');
-    const todoColumns = document.querySelectorAll('.todo-column');
+    const todoColumns = document.querySelectorAll('.todo-column, .no-priority-content');
     
     // CSRF Token für AJAX Requests
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -588,13 +556,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Neue Priorität bestimmen
         let newPriority;
-        if (this.classList.contains('high-priority')) {
+        if (this.classList.contains('high-priority') || this.closest('.high-priority')) {
             newPriority = 'high';
-        } else if (this.classList.contains('medium-priority')) {
+        } else if (this.classList.contains('medium-priority') || this.closest('.medium-priority')) {
             newPriority = 'medium';
-        } else if (this.classList.contains('low-priority')) {
+        } else if (this.classList.contains('low-priority') || this.closest('.low-priority')) {
             newPriority = 'low';
-        } else if (this.classList.contains('no-priority')) {
+        } else if (this.classList.contains('no-priority-content') || this.closest('.no-priority-content')) {
             newPriority = 'none';
         }
         
