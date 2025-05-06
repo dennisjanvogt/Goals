@@ -188,54 +188,62 @@
             
             <div class="progress-container">
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: {{ goal.get_progress_percentage }}%;"></div>
+                    <div class="progress-fill" style="width: {{ goal.get_progress_percentage|floatformat:0 }}%;"></div>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #6c757d;">
-                    <span>0%</span>
-                    <span>{{ goal.get_progress_percentage|floatformat:0 }}%</span>
-                    <span>100%</span>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #6c757d; margin-top: 5px;">
+                    <span>{{ goal.start_value }} {{ goal.unit }}</span>
+                    <span>{{ goal.get_progress_percentage|floatformat:0 }}% erreicht</span>
+                    <span>{{ goal.target_value }} {{ goal.unit }}</span>
                 </div>
             </div>
-            
-            <h4 style="margin-bottom: 10px; font-size: 1.1rem;">Monatliche Werte</h4>
-            <div class="monthly-values">
-                {% for month, value in goal.get_monthly_values %}
-                    <div class="month-value">
-                        <div class="month-name">{{ month }}</div>
-                        <div class="month-data">
-                            {% if value %}
-                                {{ value }} {{ goal.unit }}
-                            {% else %}
-                                -
-                            {% endif %}
+                
+                <!-- Schnellaktualisieren-Button -->
+                <div style="text-align: center; margin: 15px 0;">
+                    <a href="{% url 'quick_update_yearly_goal' goal.id %}" class="btn btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i data-lucide="refresh-cw" class="vsc-icon"></i>
+                        Aktuellen Stand aktualisieren
+                    </a>
+                </div>
+                
+                <h4 style="margin-bottom: 10px; font-size: 1.1rem;">Monatliche Werte</h4>
+                <div class="monthly-values">
+                    {% for month, value in goal.get_monthly_values %}
+                        <div class="month-value">
+                            <div class="month-name">{{ month }}</div>
+                            <div class="month-data">
+                                {% if value %}
+                                    {{ value }} {{ goal.unit }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="{% url 'update_yearly_goal' goal.id %}" class="btn btn-light">
+                        <i data-lucide="edit" class="vsc-icon vsc-icon-edit"></i>
+                        Bearbeiten
+                    </a>
+                    <a href="{% url 'delete_yearly_goal' goal.id %}" class="btn btn-danger">
+                        <i data-lucide="trash-2" class="vsc-icon vsc-icon-delete"></i>
+                        Löschen
+                    </a>
+                </div>
             </div>
-            
-            <div class="action-buttons">
-                <a href="{% url 'update_yearly_goal' goal.id %}" class="btn btn-light">
-                    <i data-lucide="edit" class="vsc-icon vsc-icon-edit"></i>
-                    Bearbeiten
-                </a>
-                <a href="{% url 'delete_yearly_goal' goal.id %}" class="btn btn-danger">
-                    <i data-lucide="trash-2" class="vsc-icon vsc-icon-delete"></i>
-                    Löschen
+        </div>
+        {% empty %}
+        <div class="no-goals">
+            <h3>Keine Jahresziele gefunden</h3>
+            <p>Du hast noch keine Jahresziele erstellt.</p>
+            <div class="add-button">
+                <a href="{% url 'add_yearly_goal' %}" class="btn btn-primary">
+                    <i data-lucide="plus-circle" class="vsc-icon"></i>
+                    Jahresziel erstellen
                 </a>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% empty %}
-    <div class="no-goals">
-        <h3>Keine Jahresziele gefunden</h3>
-        <p>Du hast noch keine Jahresziele erstellt.</p>
-        <div class="add-button">
-            <a href="{% url 'add_yearly_goal' %}" class="btn btn-primary">
-                <i data-lucide="plus-circle" class="vsc-icon"></i>
-                Jahresziel erstellen
-            </a>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% endblock %}
+    {% endblock %}

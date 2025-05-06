@@ -102,6 +102,12 @@
         margin-bottom: 20px;
         border-left: 4px solid var(--danger);
     }
+    
+    .help-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
 </style>
 {% endblock %}
 
@@ -176,6 +182,17 @@
                 {% if form.start_value.errors %}
                     <div class="form-error">{{ form.start_value.errors.0 }}</div>
                 {% endif %}
+            </div>
+            
+            <div class="form-group" style="flex: 1;">
+                <label for="id_current_value">Aktueller Stand:</label>
+                {{ form.current_value }}
+                {% if form.current_value.errors %}
+                    <div class="form-error">{{ form.current_value.errors.0 }}</div>
+                {% endif %}
+                <div class="help-text">
+                    Optional: Überschreibt die Monatsangaben für die Berechnung des Fortschritts
+                </div>
             </div>
             
             <div class="form-group" style="flex: 1;">

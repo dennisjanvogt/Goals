@@ -275,3 +275,27 @@ def delete_yearly_goal(request, goal_id):
     return render(request, 'tracking/delete_yearly_goal.html', {
         'yearly_goal': yearly_goal
     })
+
+
+# Diese Funktion am Ende von tracking/views.py hinzufügen
+
+@login_required
+def quick_update_yearly_goal(request, goal_id):
+    """Schnelles Update des aktuellen Standes eines Jahresziels"""
+    goal = get_object_or_404(YearlyGoal, id=goal_id, user=request.user)
+    
+    if request.method == 'POST':
+        new_value = request.POST.get('current_value')
+        if new_value:
+            try:
+                goal.current_value = float(new_value)
+                goal.save()
+                messages.success(request, 'Jahresziel erfolgreich aktualisiert!')
+            except ValueError:
+                messages.error(request, 'Bitte gib einen gültigen Wert ein.')
+        return redirect('yearly_goals')
+    
+    # Einfaches Formular für die Schnellaktualisierung anzeigen
+    return render(request, 'tracking/quick_update_yearly_goal.html', {
+        'goal': goal
+    })

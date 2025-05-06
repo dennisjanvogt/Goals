@@ -63,9 +63,6 @@ class Goal(models.Model):
         super().save(*args, **kwargs)
 
 
-
-
-
 class YearlyGoal(models.Model):
     YEARS_CHOICES = [
         (2020, '2020'),
@@ -84,6 +81,10 @@ class YearlyGoal(models.Model):
     start_value = models.FloatField()
     target_value = models.FloatField()
     unit = models.CharField(max_length=50)
+    
+    # Neues Feld für aktuellen Stand
+    current_value = models.FloatField(null=True, blank=True, 
+                                      help_text="Aktueller Stand unabhängig von monatlichen Werten")
     
     # Monthly values
     january = models.FloatField(null=True, blank=True)
@@ -106,7 +107,12 @@ class YearlyGoal(models.Model):
         return f"{self.title} ({self.year})"
     
     def get_current_value(self):
-        """Returns the most recent non-null monthly value"""
+        """Returns either the explicitly set current value or the most recent non-null monthly value"""
+        # Wenn ein expliziter aktueller Wert gesetzt ist, diesen zurückgeben
+        if self.current_value is not None:
+            return self.current_value
+            
+        # Sonst wie bisher den letzten monatlichen Wert zurückgeben
         months = [
             self.december, self.november, self.october, 
             self.september, self.august, self.july,
@@ -121,17 +127,26 @@ class YearlyGoal(models.Model):
         return self.start_value
     
     def get_progress_percentage(self):
-        """Calculate progress percentage towards target"""
+        """Calculate progress percentage towards target with improved handling of edge cases"""
         current = self.get_current_value()
         target_diff = self.target_value - self.start_value
         
-        if target_diff == 0:  # Avoid division by zero
+        # Wenn Start- und Zielwert identisch sind, prüfe ob das Ziel erreicht wurde
+        if target_diff == 0:
             return 100 if current >= self.target_value else 0
             
-        current_diff = current - self.start_value
-        percentage = (current_diff / target_diff) * 100
+        # Wenn das Ziel ist, einen Wert zu reduzieren (z.B. Gewicht verlieren)
+        if self.target_value < self.start_value:
+            # Umgekehrte Berechnung für Reduktionsziele
+            current_diff = self.start_value - current
+            max_diff = self.start_value - self.target_value
+            percentage = (current_diff / max_diff) * 100 if max_diff != 0 else 0
+        else:
+            # Normale Berechnung für Wachstumsziele
+            current_diff = current - self.start_value
+            percentage = (current_diff / target_diff) * 100
         
-        # Cap percentage between 0 and 100
+        # Prozentsatz zwischen 0 und 100 begrenzen
         return max(0, min(100, percentage))
     
     def get_monthly_values(self):

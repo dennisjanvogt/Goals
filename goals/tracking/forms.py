@@ -113,7 +113,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 class YearlyGoalForm(forms.ModelForm):
     class Meta:
         model = YearlyGoal
-        fields = ['title', 'description', 'year', 'start_value', 'target_value', 'unit',
+        fields = ['title', 'description', 'year', 'start_value', 'current_value', 'target_value', 'unit',
                  'january', 'february', 'march', 'april', 'may', 'june',
                  'july', 'august', 'september', 'october', 'november', 'december']
         widgets = {
@@ -121,6 +121,7 @@ class YearlyGoalForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Beschreibung des Jahresziels'}),
             'year': forms.Select(attrs={'class': 'form-control'}),
             'start_value': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Anfangswert'}),
+            'current_value': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Aktueller Stand (optional)'}),
             'target_value': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Zielwert'}),
             'unit': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Einheit (z.B. Abonnenten, kg, €)'}),
             'january': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Januar'}),

@@ -1,0 +1,111 @@
+{% extends 'tracking/base.html' %}
+{% load static %}
+
+{% block title %}Jahresziel aktualisieren{% endblock %}
+
+{% block extra_css %}
+<style>
+    .update-container {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 1.1rem;
+    }
+    
+    .goal-info {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+    
+    .btn {
+        display: inline-block;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background-color: #e9ecef;
+        color: #333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Aktuellen Stand aktualisieren</h1>
+    <p>Trage den neuen aktuellen Stand für dein Jahresziel ein</p>
+</div>
+
+<div class="update-container">
+    <div class="goal-info">
+        <h3>{{ goal.title }}</h3>
+        <p style="margin-top: 5px; color: #555;">Jahresziel für {{ goal.year }}</p>
+        
+        <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.9rem;">
+            <span>Start: {{ goal.start_value }} {{ goal.unit }}</span>
+            <span>Aktuell: {{ goal.get_current_value }} {{ goal.unit }}</span>
+            <span>Ziel: {{ goal.target_value }} {{ goal.unit }}</span>
+        </div>
+        
+        <div style="margin-top: 10px;">
+            <div style="height: 8px; background-color: #e9ecef; border-radius: 4px; overflow: hidden;">
+                <div style="height: 100%; border-radius: 4px; background: linear-gradient(to right, var(--primary), #74b9ff); width: {{ goal.get_progress_percentage|floatformat:0 }}%;"></div>
+            </div>
+            <div style="text-align: center; margin-top: 5px; font-size: 0.9rem;">
+                {{ goal.get_progress_percentage|floatformat:0 }}% erreicht
+            </div>
+        </div>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="current_value">Aktueller Stand:</label>
+            <input type="number" step="any" name="current_value" id="current_value" 
+                   class="form-control" value="{{ goal.current_value|default:goal.get_current_value }}"
+                   placeholder="Aktueller Stand in {{ goal.unit }}" required>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{% url 'yearly_goals' %}" class="btn btn-secondary">Abbrechen</a>
+            <button type="submit" class="btn btn-primary">Aktualisieren</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
