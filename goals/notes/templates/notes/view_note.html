@@ -1,0 +1,36 @@
+<!-- notes/templates/notes/view_note.html -->
+{% extends 'notes/base.html' %}
+{% load static %}
+
+{% block notes_content %}
+<div class="note-view">
+    <div class="note-view-header">
+        <h2 class="note-view-title">
+            {% if note.is_pinned %}
+            <i data-lucide="pin" style="width: 18px; height: 18px; margin-right: 5px; vertical-align: middle;"></i>
+            {% endif %}
+            {{ note.title }}
+        </h2>
+        
+        <div class="note-view-actions">
+            <a href="{% url 'edit_note' note.id %}" class="note-view-action-btn">
+                <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
+                Bearbeiten
+            </a>
+            <a href="{% url 'delete_note' note.id %}" class="note-view-action-btn delete">
+                <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                Löschen
+            </a>
+        </div>
+    </div>
+    
+    <div class="note-view-content markdown-content">
+        {{ note.get_formatted_content }}
+    </div>
+    
+    <div class="note-view-meta">
+        <span>Thema: {{ note.topic.name }}</span>
+        <span>Zuletzt aktualisiert: {{ note.updated_at|date:"d.m.Y H:i" }}</span>
+    </div>
+</div>
+{% endblock %}

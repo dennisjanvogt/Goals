@@ -1,0 +1,89 @@
+<!-- notes/templates/notes/home.html -->
+{% extends 'notes/base.html' %}
+{% load static %}
+
+{% block notes_content %}
+<div class="search-bar">
+    <form action="{% url 'notes_home' %}" method="get" style="flex: 1; display: flex; gap: 10px;">
+        <input type="text" name="q" class="search-input" placeholder="Notizen durchsuchen..." value="{{ search_query|default:'' }}">
+        <button type="submit" class="btn btn-secondary" style="display: flex; align-items: center; gap: 5px;">
+            <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+            Suchen
+        </button>
+        {% if search_query %}
+        <a href="{% url 'notes_home' %}" class="btn btn-secondary" style="display: flex; align-items: center; gap: 5px;">
+            <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            Zurücksetzen
+        </a>
+        {% endif %}
+    </form>
+    
+    <a href="{% url 'add_note' %}{% if current_topic %}?topic={{ current_topic.id }}{% endif %}" class="add-note-btn">
+        <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+        Neue Notiz
+    </a>
+</div>
+
+{% if current_topic %}
+<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <h2>{{ current_topic.name }}</h2>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'edit_topic' current_topic.id %}" class="btn btn-secondary" style="display: flex; align-items: center; gap: 5px;">
+            <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
+            Thema bearbeiten
+        </a>
+        <a href="{% url 'delete_topic' current_topic.id %}" class="btn btn-danger" style="display: flex; align-items: center; gap: 5px;">
+            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+            Thema löschen
+        </a>
+    </div>
+</div>
+{% elif search_query %}
+<div style="margin-bottom: 20px;">
+    <h2>Suchergebnisse für "{{ search_query }}"</h2>
+</div>
+{% endif %}
+
+<div class="notes-list">
+    {% for note in notes %}
+    <a href="{% url 'view_note' note.id %}" class="note-card">
+        {% if note.is_pinned %}
+        <div class="pinned-indicator">
+            <i data-lucide="pin" style="width: 16px; height: 16px;"></i>
+        </div>
+        {% endif %}
+        
+        <div class="note-card-header">
+            <h3 class="note-card-title">{{ note.title }}</h3>
+        </div>
+        
+        <div class="note-card-content">
+            {{ note.content|truncatechars:150|linebreaksbr }}
+        </div>
+        
+        <div class="note-card-footer">
+            <span>{{ note.topic.name }}</span>
+            <span>{{ note.updated_at|date:"d.m.Y H:i" }}</span>
+        </div>
+    </a>
+<!-- notes/templates/notes/home.html (continued) -->
+{% empty %}
+<div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+    {% if current_topic %}
+        <h3>Keine Notizen in diesem Thema</h3>
+        <p>Erstelle deine erste Notiz in "{{ current_topic.name }}".</p>
+    {% elif search_query %}
+        <h3>Keine Ergebnisse gefunden</h3>
+        <p>Es wurden keine Notizen gefunden, die "{{ search_query }}" enthalten.</p>
+    {% else %}
+        <h3>Keine Notizen vorhanden</h3>
+        <p>Du hast noch keine Notizen erstellt.</p>
+    {% endif %}
+    <a href="{% url 'add_note' %}{% if current_topic %}?topic={{ current_topic.id }}{% endif %}" class="btn btn-primary" style="margin-top: 15px; display: inline-flex; align-items: center; gap: 5px;">
+        <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+        Notiz erstellen
+    </a>
+</div>
+{% endfor %}
+</div>
+{% endblock %}

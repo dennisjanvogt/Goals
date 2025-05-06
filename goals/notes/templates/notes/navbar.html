@@ -1,0 +1,14 @@
+<!-- notes/templates/notes/navbar.html -->
+{% extends 'home/base_navbar.html' %}
+
+{% block app_specific_nav %}
+    <a href="{% url 'notes_home' %}" class="nav-link {% if request.resolver_match.url_name == 'notes_home' or request.resolver_match.url_name == 'view_note' %}active{% endif %}">
+        <i data-lucide="file-text" class="vsc-icon vsc-icon-notes"></i>Notizen
+    </a>
+    <a href="{% url 'add_note' %}" class="nav-link {% if request.resolver_match.url_name == 'add_note' %}active{% endif %}">
+        <i data-lucide="file-plus" class="vsc-icon vsc-icon-add-note"></i>Neue Notiz
+    </a>
+    <a href="{% url 'add_topic' %}" class="nav-link {% if request.resolver_match.url_name == 'add_topic' %}active{% endif %}">
+        <i data-lucide="folder-plus" class="vsc-icon vsc-icon-add-topic"></i>Neues Thema
+    </a>
+{% endblock %}

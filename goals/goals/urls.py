@@ -20,6 +20,7 @@ urlpatterns = [
     path('register/', views_auth.register_view, name='register'),
     path('login/', views_auth.login_view, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('notes/', include('notes.urls')),
     path('', include('home.urls')),  # Include home urls for landing page
     path('', redirect_to_goals, name='home'),
 ]

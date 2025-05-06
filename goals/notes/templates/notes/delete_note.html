@@ -1,0 +1,34 @@
+<!-- notes/templates/notes/delete_note.html -->
+{% extends 'notes/base.html' %}
+{% load static %}
+
+{% block notes_content %}
+<div style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); text-align: center;">
+    <div style="font-size: 4rem; color: var(--danger); margin-bottom: 20px;">⚠️</div>
+    
+    <div style="margin-bottom: 30px;">
+        <h2 style="margin-bottom: 15px;">Notiz löschen</h2>
+        <p>Bist du sicher, dass du die folgende Notiz dauerhaft löschen möchtest?</p>
+        <p><strong>Diese Aktion kann nicht rückgängig gemacht werden!</strong></p>
+    </div>
+    
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: left;">
+        <h3 style="margin-bottom: 10px;">{{ note.title }}</h3>
+        <p style="color: #666;">Thema: {{ note.topic.name }}</p>
+        <p style="color: #666;">Erstellt am: {{ note.created_at|date:"d.m.Y H:i" }}</p>
+        <p style="color: #666;">Zuletzt aktualisiert: {{ note.updated_at|date:"d.m.Y H:i" }}</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div style="display: flex; justify-content: center; gap: 20px;">
+            <a href="{% url 'view_note' note.id %}" class="btn btn-secondary">
+                Abbrechen
+            </a>
+            <button type="submit" class="btn btn-danger">
+                Löschen bestätigen
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

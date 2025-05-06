@@ -1,0 +1,41 @@
+<!-- notes/templates/notes/delete_topic.html -->
+{% extends 'notes/base.html' %}
+{% load static %}
+
+{% block notes_content %}
+<div style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); text-align: center;">
+    <div style="font-size: 4rem; color: var(--danger); margin-bottom: 20px;">⚠️</div>
+    
+    <div style="margin-bottom: 30px;">
+        <h2 style="margin-bottom: 15px;">Thema löschen</h2>
+        <p>Bist du sicher, dass du das folgende Thema dauerhaft löschen möchtest?</p>
+        <p><strong>Diese Aktion kann nicht rückgängig gemacht werden!</strong></p>
+    </div>
+    
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: left;">
+        <h3 style="margin-bottom: 10px;">{{ topic.name }}</h3>
+        {% if topic.description %}
+            <p style="color: #666;">{{ topic.description }}</p>
+        {% endif %}
+        <p style="color: #666;">Erstellt am: {{ topic.created_at|date:"d.m.Y" }}</p>
+        
+        {% if note_count > 0 %}
+            <p style="color: var(--danger); font-weight: bold; margin-top: 15px;">
+                Warnung: Dieses Thema enthält {{ note_count }} Notiz{% if note_count > 1 %}en{% endif %}, die ebenfalls gelöscht werden!
+            </p>
+        {% endif %}
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div style="display: flex; justify-content: center; gap: 20px;">
+            <a href="{% url 'notes_home' %}?topic={{ topic.id }}" class="btn btn-secondary">
+                Abbrechen
+            </a>
+            <button type="submit" class="btn btn-danger">
+                Löschen bestätigen
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
